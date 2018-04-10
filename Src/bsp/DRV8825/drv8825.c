@@ -699,12 +699,10 @@ void A1_ReadRealTime_A2_Value(void)
 {
        uint32_t real_value;
 	   real_value=step_count;
-       // send_realn=Decimal_TO_Hex(real_value);
-	
-	   i2c_tx_buffer[2]=real_value & 0xff;
+       i2c_tx_buffer[2]=real_value & 0xff;
 	   i2c_tx_buffer[1]=real_value>>8 & 0xff;
 	   i2c_tx_buffer[0]=real_value>>16 & 0xff; 
-	   printf("RealTime= %ld \n",real_value);
+	 //  printf("RealTime= %ld \n",real_value);
       		  
 }
 /***********************************************************

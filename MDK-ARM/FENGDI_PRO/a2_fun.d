@@ -69,3 +69,4 @@
 .\fengdi_pro\a2_fun.o: ..\Inc\bsp\GeneralTIM/bsp_GeneralTIM.h
 .\fengdi_pro\a2_fun.o: ..\Inc\bsp\DS18B20/bsp_DS18B20.h
 .\fengdi_pro\a2_fun.o: ..\Inc\bsp\i2c_slave/bsp_I2C.h
+.\fengdi_pro\a2_fun.o: ..\Inc\bsp\spi/bsp_spi.h

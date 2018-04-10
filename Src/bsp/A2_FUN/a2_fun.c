@@ -10,7 +10,7 @@
 #include "GeneralTIM/bsp_GeneralTIM.h"
 #include "DS18B20/bsp_DS18B20.h"
 #include "i2c_slave/bsp_I2C.h"
-
+#include "spi/bsp_spi.h"
 
 extern uint8_t i2c_tx_buffer[3];
 extern __IO uint16_t Toggle_Pulse ;
@@ -40,7 +40,7 @@ extern uint8_t  SPI_RX_FLAG;
 extern uint8_t SPI_RX_DATA;
 extern uint8_t I2C_TX_FLAG;
 extern uint8_t I2C_TX_DATA;
-
+__IO uint8_t A2_RX_STOP=0;
 
 /**********************************************************
  *
@@ -278,11 +278,10 @@ void A2_MOTOR_FUN(void)
 void A1_CONTROL_A2_MOTOR_FUN(void)
 {
     
-	      //HAL_SPI_Receive_IT(&hspi_SPI,&aRxBuffer[0],7);
-		     switch(SPI_aRxBuffer[2]) 
+	         switch(SPI_aRxBuffer[2]) 
 			 {
-				// SPI_RX_FLAG=0;
-				 case 0x02:
+				
+				  case 0x02:
 					if(SPI_aRxBuffer[6]==0xb)
 					{
 				
@@ -317,6 +316,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			          repcdata[1]=0;
 					  repcdata[2]=0;
 				    }
+					HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 					 break;
 				   case 0x82 :   //背离马达的方向移动。
 					 if(SPI_aRxBuffer[6]==0xb) 
@@ -329,6 +329,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						  DRV8825_CCW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
 					      printf("0x82 order \n");
 						   // HAL_UART_Transmit(&husartx,tranbuffer,1,1);
+						  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 					  }
 				    break;
 			  case 0x33 :
@@ -347,9 +348,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						 
 					  STEPMOTOR_PC_AxisMoveAbs( repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
                       printf("motor works 0x33 order \n");
-					 
-					
-					  }
+					  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+					 }
 			        
 					  break;
 					  
@@ -365,10 +365,12 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 					 if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
 							{
 								DRV8825_StopMove();
+								printf("switch spi_rx_stop=1 \n");
 							}
 					 
 						//	printf("0Xb0 is OK \n");
 				    }
+				    HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 			        break;
 
 			 case 0xa0 :    //重新设置原点
@@ -480,17 +482,20 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 					 }
 				break;
+			#if 0
 			case 0x00 :
-				 if(SPI_aRxBuffer[6]==0xb)
+				// if(SPI_aRxBuffer[6]==0xb)  //wt.edit 18.04.07
 				 {
-				    SPI_RX_DATA=0;
+				    SPI_RX_FLAG=0;
+					A2_RX_STOP=1;
 					 DRV8825_StopMove();
 					__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 				 
 				 }
 				 break;
+			#endif
 				default:
-					SPI_RX_DATA=0;
+					SPI_RX_FLAG=0;
 	    }	
 } 
     
@@ -506,18 +511,13 @@ void A1_Read_A2_DATA(void)
 {	
 	uint8_t DS18B20ID[8],temp;
     float ftemp;
-			    printf("SPI_aRxBufffer[2]= %#x\n",SPI_aRxBuffer[2]);
-				printf("SPI_aRxBufffer[3]= %#x\n",SPI_aRxBuffer[3]);
-				printf("SPI_aRxBufffer[4]= %#x\n",SPI_aRxBuffer[4]);
-				printf("SPI_aRxBufffer[5]= %#x\n",SPI_aRxBuffer[5]);
-				printf("SPI_aRxBufffer[6]= %#x\n",SPI_aRxBuffer[6]);
-			switch(SPI_aRxBuffer[2])
+		  switch(SPI_aRxBuffer[2])
 			{
 				case 0x03 :   //读取指令  读取马达实时位置脉冲数
-					printf("a2 reader 0x03 order \n");
-					I2C_TX_DATA=0;
+					 I2C_TX_DATA=0;
 					 A1_ReadRealTime_A2_Value();
 					 I2C_MASTER_TX_DATA();
+					 printf("a2 reader 0x03 order \n");
 				    break;
 				case 0x04 : //读取LED灯的亮度值
 						I2C_TX_DATA=0;

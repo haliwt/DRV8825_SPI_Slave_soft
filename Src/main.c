@@ -45,6 +45,7 @@ uint8_t SPI_RX_DATA=0;
 uint8_t I2C_TX_FLAG=0;
 uint8_t I2C_TX_DATA=0;
 extern __IO uint8_t END_STOP_FLAG;  //马达运行到终点，停止标志位
+extern __IO uint8_t A2_RX_STOP;
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -172,19 +173,20 @@ int main(void)
 	  if(KEY1_StateRead()==KEY_DOWN)
 		 {
 		     Mode_Count++;
-			   if(Mode_Count ==4&&Mode_Count!=0)
-               Mode_Count = 0;	 
-			   STEPMOTOR_AxisMoveRel(-5*SPR, Toggle_Pulse);
+			 if(Mode_Count ==4&&Mode_Count!=0)
+             Mode_Count = 0;	 
+			 STEPMOTOR_AxisMoveRel(-5*SPR, Toggle_Pulse);
 			  
 		}
 		
-		if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)//||(stop_key_flag==1))
+		if((HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)||(A2_RX_STOP==1))
 		{
 		    PB8_flag=1;
 			DRV8825_StopMove();
-			//GPIO_PB10_HIGH;
-		    
-	    }
+			A2_RX_STOP=0;
+			printf("a2_rx_stop=1\n");
+
+		 }
 		if( END_STOP_FLAG==1)  //马达运行到终点，停止标志位
 		{
 		   END_STOP_FLAG=0;
@@ -205,7 +207,8 @@ int main(void)
 
 /******************************************************************************
   *
-  * 函数功能: 串口接收-------回调函数
+  * 函数名称：
+  *函数功能: 串口接收-------回调函数
   * 输入参数: 无
   * 返 回 值: 无
   * 说    明：无
@@ -422,10 +425,14 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   
   if(SPI_aRxBuffer[0]==0xa2)
   {
-     if(SPI_aRxBuffer[1]==0x00)
+     SPI_RX_FLAG=1;
+	 if(SPI_aRxBuffer[1]==0x00)
 	 {
-		//printf("SPI_aBufffer[1]=0x00\n");
-		SPI_RX_FLAG=1;
+		if(SPI_aRxBuffer[2]==0x00)
+			{
+              A2_RX_STOP=1;
+			  DRV8825_StopMove();
+		    }
 	 }
 	 else if (SPI_aRxBuffer[1]==0x01)
 	 {
@@ -436,8 +443,6 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   else 
   {
       HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
-	  SPI_RX_FLAG=0;
-      I2C_TX_DATA=0;
 	  printf("SPI_receive data error \n");
   }
  
