@@ -2552,7 +2552,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_hcd.h)(0x5714AE70)
-F (../Src/main.c)(0x5AC84B86)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\main.o --omf_browse .\fengdi_pro\main.crf --depend .\fengdi_pro\main.d)
+F (../Src/main.c)(0x5AD0211E)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\main.o --omf_browse .\fengdi_pro\main.crf --depend .\fengdi_pro\main.d)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
 I (../Inc/stm32f1xx_hal_conf.h)(0x572227EF)
 I (../Inc/mxconstants.h)(0x57222042)
@@ -2622,7 +2622,7 @@ I (..\Inc\bsp\i2c/bsp_EEPROM.h)(0x5AB46581)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x5475F2FE)
 I (..\Inc\bsp\lamp/bsp_lamp.h)(0x5A768E31)
 I (..\Inc\bsp\ds18b20/bsp_ds18b20.h)(0x5A9C322B)
-I (..\Inc\bsp\spi/bsp_spi.h)(0x5AB258A6)
+I (..\Inc\bsp\spi/bsp_spi.h)(0x5ACEAA7A)
 I (..\Inc\bsp\i2c_slave/bsp_I2C.h)(0x5AC846D3)
 I (..\Inc\bsp\a2_fun/a2_fun.h)(0x5AB617C1)
 F (../Src/stm32f1xx_hal_msp.c)(0x57223CEE)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\stm32f1xx_hal_msp.o --omf_browse .\fengdi_pro\stm32f1xx_hal_msp.crf --depend .\fengdi_pro\stm32f1xx_hal_msp.d)
@@ -2748,7 +2748,7 @@ I (..\Inc\bsp\led/bsp_led.h)(0x5AC4A6C7)
 I (..\Inc\bsp\DRV8825/drv8825.h)(0x5AC43A8D)
 I (..\Inc\bsp\StepMotor/bsp_STEPMOTOR.h)(0x5A9C2C49)
 I (..\Inc\bsp\i2c_slave/bsp_I2C.h)(0x5AC846D3)
-I (..\Inc\bsp\spi/bsp_spi.h)(0x5AB258A6)
+I (..\Inc\bsp\spi/bsp_spi.h)(0x5ACEAA7A)
 F (..\Src\stm32f1xx_assert.c)(0x571CEA09)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\stm32f1xx_assert.o --omf_browse .\fengdi_pro\stm32f1xx_assert.crf --depend .\fengdi_pro\stm32f1xx_assert.d)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
 I (../Inc/stm32f1xx_hal_conf.h)(0x572227EF)
@@ -2925,7 +2925,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_hcd.h)(0x5714AE70)
-F (..\Src\bsp\DRV8825\drv8825.c)(0x5AC846A4)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\drv8825.o --omf_browse .\fengdi_pro\drv8825.crf --depend .\fengdi_pro\drv8825.d)
+F (..\Src\bsp\DRV8825\drv8825.c)(0x5ACFF697)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\drv8825.o --omf_browse .\fengdi_pro\drv8825.crf --depend .\fengdi_pro\drv8825.d)
 I (..\Inc\bsp\DRV8825/drv8825.h)(0x5AC43A8D)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
 I (../Inc/stm32f1xx_hal_conf.h)(0x572227EF)
@@ -3052,7 +3052,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_hcd.h)(0x5714AE70)
-F (..\Src\bsp\key\bsp_key.c)(0x5AC82195)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\bsp_key.o --omf_browse .\fengdi_pro\bsp_key.crf --depend .\fengdi_pro\bsp_key.d)
+F (..\Src\bsp\key\bsp_key.c)(0x5ACFF64B)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\bsp_key.o --omf_browse .\fengdi_pro\bsp_key.crf --depend .\fengdi_pro\bsp_key.d)
 I (..\Inc\bsp\key/bsp_key.h)(0x5AC4A7CA)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
 I (../Inc/stm32f1xx_hal_conf.h)(0x572227EF)
@@ -3113,7 +3113,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_hcd.h)(0x5714AE70)
 I (..\Inc\bsp\led/bsp_led.h)(0x5AC4A6C7)
 I (..\Inc\bsp\DRV8825/drv8825.h)(0x5AC43A8D)
-F (..\Src\bsp\StepMotor\bsp_StepMotor.c)(0x5AC7049F)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\bsp_stepmotor.o --omf_browse .\fengdi_pro\bsp_stepmotor.crf --depend .\fengdi_pro\bsp_stepmotor.d)
+F (..\Src\bsp\StepMotor\bsp_StepMotor.c)(0x5AD019A3)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\bsp_stepmotor.o --omf_browse .\fengdi_pro\bsp_stepmotor.crf --depend .\fengdi_pro\bsp_stepmotor.d)
 I (..\Inc\bsp\StepMotor/bsp_STEPMOTOR.h)(0x5A9C2C49)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
 I (../Inc/stm32f1xx_hal_conf.h)(0x572227EF)
@@ -3477,7 +3477,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x5714AE70)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_hcd.h)(0x5714AE70)
 F (..\Src\bsp\spi\bsp_spi.c)(0x5AB5BAD6)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\bsp_spi.o --omf_browse .\fengdi_pro\bsp_spi.crf --depend .\fengdi_pro\bsp_spi.d)
-I (..\Inc\bsp\spi/bsp_spi.h)(0x5AB258A6)
+I (..\Inc\bsp\spi/bsp_spi.h)(0x5ACEAA7A)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
 I (../Inc/stm32f1xx_hal_conf.h)(0x572227EF)
 I (../Inc/mxconstants.h)(0x57222042)
@@ -3546,7 +3546,7 @@ I (..\Inc\bsp\lamp/bsp_lamp.h)(0x5A768E31)
 I (..\Inc\bsp\GeneralTIM/bsp_GeneralTIM.h)(0x5A95F56C)
 I (..\Inc\bsp\DS18B20/bsp_DS18B20.h)(0x5A9C322B)
 I (..\Inc\bsp\i2c_slave/bsp_I2C.h)(0x5AC846D3)
-F (..\Src\bsp\A2_FUN\a2_fun.c)(0x5AC84B7E)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\a2_fun.o --omf_browse .\fengdi_pro\a2_fun.crf --depend .\fengdi_pro\a2_fun.d)
+F (..\Src\bsp\A2_FUN\a2_fun.c)(0x5ACFF309)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\a2_fun.o --omf_browse .\fengdi_pro\a2_fun.crf --depend .\fengdi_pro\a2_fun.d)
 I (..\Inc\bsp\a2_fun/a2_fun.h)(0x5AB617C1)
 I (..\Inc\bsp\DRV8825/drv8825.h)(0x5AC43A8D)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x5714AE70)
@@ -3616,7 +3616,7 @@ I (..\Inc\bsp\lamp/bsp_lamp.h)(0x5A768E31)
 I (..\Inc\bsp\GeneralTIM/bsp_GeneralTIM.h)(0x5A95F56C)
 I (..\Inc\bsp\DS18B20/bsp_DS18B20.h)(0x5A9C322B)
 I (..\Inc\bsp\i2c_slave/bsp_I2C.h)(0x5AC846D3)
-I (..\Inc\bsp\spi/bsp_spi.h)(0x5AB258A6)
+I (..\Inc\bsp\spi/bsp_spi.h)(0x5ACEAA7A)
 F (..\Readme\01.例程功能说明.txt)(0x57223FD3)()
 F (..\Readme\02.开发环境说明.txt)(0x571CEED8)()
 F (..\SYSTEM\delay\delay.c)(0x5A9C156F)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I..\Inc\bsp -I..\SYSTEM\delay -I..\SYSTEM\sys --C99-I E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\fengdi_pro\delay.o --omf_browse .\fengdi_pro\delay.crf --depend .\fengdi_pro\delay.d)

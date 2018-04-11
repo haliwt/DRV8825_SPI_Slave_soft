@@ -8,7 +8,7 @@
 #include "lamp/bsp_lamp.h"
 #include "GeneralTIM/bsp_GeneralTIM.h"
 #include "DS18B20/bsp_DS18B20.h"
-
+extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
 
 extern uint8_t i2c_tx_buffer[4];
 extern __IO uint16_t Toggle_Pulse ;
@@ -22,7 +22,6 @@ extern __IO int32_t PulseNumbers;
 extern __IO uint32_t step_count; 
 __IO uint8_t home_flag=0; 
 extern __IO uint32_t step_count;  //相PC机发送存储的马达脉冲数
-__IO uint8_t NewOrigin_flag=0;
 extern __IO uint8_t back_flag;
 extern __IO uint8_t re_intrrupt_flag; //从上位机，接收信号标志位，进入中断标志位
 extern __IO uint8_t PB8_flag;
@@ -34,7 +33,7 @@ extern uint8_t aRxBuffer[256];
 extern  __IO uint16_t  home_position    ; 
 extern __IO uint8_t END_STOP_FLAG;  //马达运行到终点，停止标志位
 extern __IO int32_t  LimPosi; //正方向极限标志位，背离马达方向移动的最大距离
-
+__IO uint8_t NewOrigin_flag=0;  //设置新的原点，标志位。
 /***************************************
 *
  *函数功能:马达速度设置
@@ -147,14 +146,14 @@ void DRV8825_StopMove(void)
        
         
 		stop_flag=1;
-	   // PulseNumbers=0;  //
+		// PulseNumbers=0;  //
         HAL_TIM_OC_Stop_IT(&htimx_STEPMOTOR,STEPMOTOR_TIM_CHANNEL_x);
        // 关闭通道
        TIM_CCxChannelCmd(STEPMOTOR_TIMx, STEPMOTOR_TIM_CHANNEL_x, TIM_CCx_DISABLE);        
        __HAL_TIM_CLEAR_FLAG(&htimx_STEPMOTOR, STEPMOTOR_TIM_FLAG_CCx);
-      // DRV8825_Save_CurrentPosition(); //wt.edit 2018.01.17
-       DRV8825_SLEEP_ENABLE(); //进入省电模?
        DRV8825_Save_CurrentPosition(); //wt.edit 2018.01.17
+       DRV8825_SLEEP_ENABLE(); //进入省电模?
+       //DRV8825_Save_CurrentPosition(); //wt.edit 2018.01.17
        DRV8825_OUTPUT_DISABLE();    //DRV8825芯片高电平，没有输出?
        Display_EEPROM_Value();
 	 //  GPIO_PB10_LOW;
@@ -604,35 +603,53 @@ uint8_t MOTOR_Read_NewHomeFlag(void)
 void Set_NewOrigin_Position(void)
 {
     uint8_t flag,flag_w,i;
-   // uint32_t a,b,c,d;
-	NewOrigin_flag=1;
+    NewOrigin_flag=1;  //wt.2018.04.11 add item
+
     PulseNumbers=0;
     step_count=0;
-	step_position=0;  //wt.edit 18.03.07
+	step_position=0;  //wt.edit 18.04.03
+	pulse_count=0;
+    #if 1
+	
     flag=EEPROM_CheckOk();
 	  if(flag==1)
 	  {
-	      for ( i=0; i<10; i++ ) //娓呮 EEPROM 瀛樺偍鐨刡uffer娓呴浂
+	      for ( i=0; i<12; i++ ) //娓呮 EEPROM 瀛樺偍鐨刡uffer娓呴浂
 	      {
-	      I2c_Buf_Read[i]=0;      // 清空接收缓冲区
-	      I2c_Buf_Write[i]=0;
+	       I2c_Buf_Read[i]=0;      // 清空接收缓冲区
+	       I2c_Buf_Write[i]=0;
 	      }
 	     
      //将I2c_Buf_Write中顺序递增的数据写入EERPOM中 
-		 flag_w=EEPROM_WriteBytes(I2c_Buf_Write, 0, 10); //0x05 ~0x09
-		 HAL_Delay(50);
+	  flag_w=EEPROM_WriteBytes(I2c_Buf_Write, 0, 10); //0x05 ~0x09
+		 HAL_Delay(10);
 	   //将EEPROM读出数据顺序保持到I2c_Buf_Read中  
-   	 DRV8825_Save_CurrentPosition();
+   	    DRV8825_Save_CurrentPosition();
 	  }	 
-		 if(flag_w==1) //表示写入成功
-	    {
+	  if(flag_w==1) //表示写入成功
+	  {
 	    LED1_ON;
-			HAL_Delay(10);
-			LED1_OFF;
-		   }
-		   else 
-		   	while(1);
-
+		HAL_Delay(50);
+		LED1_OFF;
+		HAL_Delay(50);
+		LED1_ON;
+	 }
+	else 
+   	{
+      LED1_ON;
+	  LED2_ON;
+      HAL_Delay(500);
+      LED1_OFF;
+	  LED2_OFF;
+	  HAL_Delay(500);
+      LED1_ON;
+	  LED2_ON;
+	   HAL_Delay(500);
+      LED1_OFF;
+	  LED2_OFF;
+    }
+		   
+    #endif 
 
 }
 
