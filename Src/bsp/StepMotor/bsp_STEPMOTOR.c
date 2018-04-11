@@ -29,6 +29,7 @@ __IO uint8_t save_flag;
 extern __IO uint8_t NewOrigin_flag;
 extern __IO uint8_t PB8_flag;
 __IO uint8_t END_STOP_FLAG=0;  //马达运行到终点，停止标志位
+extern __IO uint8_t NewOrigin_flag;  //设置新的原点，标志位。
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -254,14 +255,14 @@ void STEPMOTOR_AxisMoveRel( int32_t step, uint32_t speed)
   * 输入参数: targert_step: 目标位置的坐标
   *           speed : 移动的速度
   * 返 回 值: 无
-  * 说    明: 电机以给定的速度移动到指定位置坐标.?0xb0指令
+  * 说    明: 电机以给定的速度移动到指定位置坐标.?0x       0x   b0
   *
  **********************************************************************/
 void STEPMOTOR_AxisMoveAbs( int32_t targert_step, uint32_t speed)
 {
 	int32_t rel_step = 0;
 	 int8_t dir = -1;
-	 rel_step = step_position - targert_step ; 	//获取当前位置和目标位置之间的步数值
+	rel_step = step_position - targert_step ; 	//获取当前位置和目标位置之间的步数值
 	if(stop_flag==0)  //wt.edit 2018.04.03
 	{
 	  stop_flag=21;
@@ -271,6 +272,14 @@ void STEPMOTOR_AxisMoveAbs( int32_t targert_step, uint32_t speed)
 	else if(rel_step == 0)	
 	{
 		dir = 0;
+	}
+	else if(NewOrigin_flag==1)
+	{
+        NewOrigin_flag=0;
+		rel_step=0;
+		step_count=0;
+		step_position=0;
+		PulseNumbers=0;
 	}
 	else dir = -1;
 	STEPMOTOR_AxisMoveRel(dir*rel_step,speed);
@@ -364,11 +373,11 @@ void STEPMOTOR_PC_AxisMoveAbs( uint8_t abs_high,uint8_t abs_mid,uint8_t abs_low,
 	}
 	else if(NewOrigin_flag==1)
 	{
-	  NewOrigin_flag=0;
+	    NewOrigin_flag=0;
 		step_position=0;
 		PulseNumbers=0;
 		step_count=0;
-	  rel_step=step_position-ABS_Distance;	//wt.edit 2018.01.16
+	    rel_step=step_position-ABS_Distance;	//wt.edit 2018.01.16
 	}
 	//home_position = Read_Origin_Position();    //wt.edit 2018.01.16
     //rel_step=home_position-targert_step;
@@ -509,7 +518,7 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
           TIM_CCxChannelCmd(STEPMOTOR_TIMx, STEPMOTOR_TIM_CHANNEL_x, TIM_CCx_DISABLE);        
           __HAL_TIM_CLEAR_FLAG(&htimx_STEPMOTOR, STEPMOTOR_TIM_FLAG_CCx);
           DRV8825_OUTPUT_DISABLE(); 
-		  END_STOP_FLAG=1;
+		 END_STOP_FLAG=1;
 		 if(stop_flag==21)
 		  {
 			stop_flag=100;

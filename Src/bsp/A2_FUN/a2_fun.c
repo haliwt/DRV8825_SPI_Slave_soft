@@ -291,32 +291,13 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 					   repcdata[1] = SPI_aRxBuffer[4];
 					   repcdata[2] = SPI_aRxBuffer[5];
 			  	    DRV8825_CW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1))
 					{
+						A2_RX_STOP=0;
 						DRV8825_StopMove();
 					}
-					HAL_Delay(2);
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
-					{
-						DRV8825_StopMove();
 					}
-					LED2_OFF;
-					LED1_ON;
-					HAL_Delay(2);
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
-					{
-						DRV8825_StopMove();
-					}
-				
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
-					{
-						DRV8825_StopMove();
-					}
-					  repcdata[0]=0;
-			          repcdata[1]=0;
-					  repcdata[2]=0;
-				    }
-					HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+					printf("0x02 order \n");
 					 break;
 				   case 0x82 :   //背离马达的方向移动。
 					 if(SPI_aRxBuffer[6]==0xb) 
@@ -328,8 +309,13 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						
 						  DRV8825_CCW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
 					      printf("0x82 order \n");
-						   // HAL_UART_Transmit(&husartx,tranbuffer,1,1);
-						  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+						  if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1))
+					       {
+								A2_RX_STOP=0;
+								DRV8825_StopMove();
+					       }   
+						  
+						 // HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 					  }
 				    break;
 			  case 0x33 :
@@ -337,18 +323,19 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			           {
 						SPI_RX_FLAG=0;
 						
-                     // DRV8825_SLEEP_DISABLE() ; //高电平开始工作
-                     // HAL_Delay(10);
+                   
 						repcdata[0]=SPI_aRxBuffer[3];
 						repcdata[1]=SPI_aRxBuffer[4];
 						repcdata[2]=SPI_aRxBuffer[5];
-						printf("SPI_aRxBuffer[3]= %#x\n",repcdata[0]);
-						printf("SPI_aRxBuffer[4]= %#x\n",repcdata[1]);
-						printf("SPI_aRxBuffer[5]= %#x\n",repcdata[2]);
-						 
-					  STEPMOTOR_PC_AxisMoveAbs( repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-                      printf("motor works 0x33 order \n");
-					  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+						
+						STEPMOTOR_PC_AxisMoveAbs( repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
+                        printf("motor works 0x33 order \n");
+						 if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1))
+					       {
+								A2_RX_STOP=0;
+								DRV8825_StopMove();
+					       }   
+					 
 					 }
 			        
 					  break;
@@ -360,17 +347,16 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 					 SPI_RX_FLAG=0;
 					// DRV8825_SLEEP_DISABLE() ; //高电平开始工作
 					 // HAL_Delay(10);
-					 home_position = Read_Origin_Position();
-					 STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
-					 if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
-							{
-								DRV8825_StopMove();
-								printf("switch spi_rx_stop=1 \n");
-							}
-					 
-						//	printf("0Xb0 is OK \n");
+					//home_position = Read_Origin_Position(); //wt.edit 2018.04.11
+					STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
+					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1))
+					  {
+						A2_RX_STOP=0;
+						DRV8825_StopMove();
+					   }   
+						
 				    }
-				    HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+				  
 			        break;
 
 			 case 0xa0 :    //重新设置原点
@@ -378,13 +364,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				 {
 			 	    SPI_RX_FLAG=0;
 			 	    Set_NewOrigin_Position();
-					HAL_Delay(30);
-					LED2_OFF;
-					LED1_OFF;
-					HAL_Delay(30);
-					LED2_ON;
-					LED1_ON;
-					HAL_Delay(10);
+					printf("new origin psoit \n");
+					
 				 }
 			 	break;
 			case 0x90 :
@@ -482,16 +463,15 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 					 }
 				break;
-			#if 0
+			#if 1
 			case 0x00 :
 				// if(SPI_aRxBuffer[6]==0xb)  //wt.edit 18.04.07
 				 {
 				    SPI_RX_FLAG=0;
 					A2_RX_STOP=1;
 					 DRV8825_StopMove();
-					__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
-				 
-				 }
+					
+				}
 				 break;
 			#endif
 				default:

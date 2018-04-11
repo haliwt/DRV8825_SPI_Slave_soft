@@ -114,10 +114,10 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.04 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.06 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
-  memcpy(txbuf,"Data:2018.04.06\n",100);
+  memcpy(txbuf,"Data:2018.04.11\n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
  
@@ -154,11 +154,10 @@ int main(void)
 	
 	   
 	  DRV8825_SLEEP_DISABLE() ; //高电平开始工作
-      HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
       if(SPI_RX_FLAG==1)
 		{
 		 SPI_RX_FLAG=0;
-		 HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 		 A1_CONTROL_A2_MOTOR_FUN(); 
 		}
 	  if(I2C_TX_DATA==1)
@@ -179,14 +178,14 @@ int main(void)
 			  
 		}
 		
-		if((HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)||(A2_RX_STOP==1))
+		if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 		{
 		    PB8_flag=1;
 			DRV8825_StopMove();
 			A2_RX_STOP=0;
 			printf("a2_rx_stop=1\n");
 
-		 }
+		}
 		if( END_STOP_FLAG==1)  //马达运行到终点，停止标志位
 		{
 		   END_STOP_FLAG=0;
@@ -425,16 +424,16 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   
   if(SPI_aRxBuffer[0]==0xa2)
   {
-     SPI_RX_FLAG=1;
+     //SPI_RX_FLAG=1;
 	 if(SPI_aRxBuffer[1]==0x00)
 	 {
-		if(SPI_aRxBuffer[2]==0x00)
+		 SPI_RX_FLAG=1;
+		 if(SPI_aRxBuffer[2]==0x00)
 			{
               A2_RX_STOP=1;
-			  DRV8825_StopMove();
-		    }
+			}
 	 }
-	 else if (SPI_aRxBuffer[1]==0x01)
+	 if (SPI_aRxBuffer[1]==0x01)
 	 {
 	   I2C_TX_DATA=1;
 	   //printf("SPI_aBufffer[1]=0x01 \n");
@@ -445,7 +444,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
       HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 	  printf("SPI_receive data error \n");
   }
- 
+  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 	
 }
 #endif
