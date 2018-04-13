@@ -8,7 +8,7 @@
 #include "lamp/bsp_lamp.h"
 #include "GeneralTIM/bsp_GeneralTIM.h"
 #include "DS18B20/bsp_DS18B20.h"
-
+extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
 
 extern uint8_t i2c_tx_buffer[4];
 extern __IO uint16_t Toggle_Pulse ;
@@ -146,14 +146,14 @@ void DRV8825_StopMove(void)
        
         
 		stop_flag=1;
-	   // PulseNumbers=0;  //
+		// PulseNumbers=0;  //
         HAL_TIM_OC_Stop_IT(&htimx_STEPMOTOR,STEPMOTOR_TIM_CHANNEL_x);
        // 关闭通道
        TIM_CCxChannelCmd(STEPMOTOR_TIMx, STEPMOTOR_TIM_CHANNEL_x, TIM_CCx_DISABLE);        
        __HAL_TIM_CLEAR_FLAG(&htimx_STEPMOTOR, STEPMOTOR_TIM_FLAG_CCx);
-      // DRV8825_Save_CurrentPosition(); //wt.edit 2018.01.17
-       DRV8825_SLEEP_ENABLE(); //进入省电模?
        DRV8825_Save_CurrentPosition(); //wt.edit 2018.01.17
+       DRV8825_SLEEP_ENABLE(); //进入省电模?
+       //DRV8825_Save_CurrentPosition(); //wt.edit 2018.01.17
        DRV8825_OUTPUT_DISABLE();    //DRV8825芯片高电平，没有输出?
        Display_EEPROM_Value();
 	 //  GPIO_PB10_LOW;
@@ -603,7 +603,11 @@ uint8_t MOTOR_Read_NewHomeFlag(void)
 void Set_NewOrigin_Position(void)
 {
     uint8_t flag,flag_w,i;
+<<<<<<< HEAD
     NewOrigin_flag=1;
+=======
+    NewOrigin_flag=1;  //wt.2018.04.11 add item
+>>>>>>> Branch_DRV8825_SPI_Slave_soft
 
     PulseNumbers=0;
     step_count=0;
@@ -629,8 +633,15 @@ void Set_NewOrigin_Position(void)
 	  if(flag_w==1) //表示写入成功
 	  {
 	    LED1_ON;
+<<<<<<< HEAD
 		HAL_Delay(10);
 		LED1_OFF;
+=======
+		HAL_Delay(50);
+		LED1_OFF;
+		HAL_Delay(50);
+		LED1_ON;
+>>>>>>> Branch_DRV8825_SPI_Slave_soft
 	 }
 	else 
    	{

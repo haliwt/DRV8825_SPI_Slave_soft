@@ -26,17 +26,192 @@ Project File Date:  03/24/2018
 
 <h2>Output:</h2>
 Build target 'SPI_SLAVE'
+compiling main.c...
+../Src/main.c(120): error:  #29: expected an expression
+  <<<<<<< .mine
+../Src/main.c(122): error:  #29: expected an expression
+  =======
+../Src/main.c(124): error:  #29: expected an expression
+  >>>>>>> .theirs
+../Src/main.c: 0 warnings, 3 errors
+compiling stm32f1xx_it.c...
 compiling drv8825.c...
-linking...
-Program Size: Code=23748 RO-data=368 RW-data=76 ZI-data=5308  
-FromELF: creating hex file...
-".\FENGDI_PRO\FDI_PRO_500.axf" - 0 Error(s), 0 Warning(s).
+..\Src\bsp\DRV8825\drv8825.c(606): error:  #29: expected an expression
+  <<<<<<< HEAD
+..\Src\bsp\DRV8825\drv8825.c(608): error:  #29: expected an expression
+  =======
+..\Src\bsp\DRV8825\drv8825.c(610): error:  #29: expected an expression
+  >>>>>>> Branch_DRV8825_SPI_Slave_soft
+..\Src\bsp\DRV8825\drv8825.c(636): error:  #29: expected an expression
+  <<<<<<< HEAD
+..\Src\bsp\DRV8825\drv8825.c(639): error:  #29: expected an expression
+  =======
+..\Src\bsp\DRV8825\drv8825.c(644): error:  #29: expected an expression
+  >>>>>>> Branch_DRV8825_SPI_Slave_soft
+..\Src\bsp\DRV8825\drv8825.c(645): error:  #65: expected a ";"
+         }
+..\Src\bsp\DRV8825\drv8825.c: 0 warnings, 7 errors
+compiling bsp_StepMotor.c...
+..\Src\bsp\StepMotor\bsp_StepMotor.c(33): error:  #169: expected a declaration
+  <<<<<<< HEAD
+..\Src\bsp\StepMotor\bsp_StepMotor.c(37): error:  #169: expected a declaration
+  >>>>>>> Branch_DRV8825_SPI_Slave_soft
+..\Src\bsp\StepMotor\bsp_StepMotor.c(71): warning:  #12-D: parsing restarts here after previous syntax error
+    GPIO_InitStruct.Pin = STEPMOTOR_ENA_PIN;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(72): error:  #77-D: this declaration has no storage class or type specifier
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(72): error:  #65: expected a ";"
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(73): error:  #77-D: this declaration has no storage class or type specifier
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(73): error:  #65: expected a ";"
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(74): error:  #79: expected a type specifier
+    HAL_GPIO_Init(STEPMOTOR_ENA_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(74): error:  #79: expected a type specifier
+    HAL_GPIO_Init(STEPMOTOR_ENA_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(74): error:  #260-D: explicit type is missing ("int" assumed)
+    HAL_GPIO_Init(STEPMOTOR_ENA_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(74): error:  #147: declaration is incompatible with "void HAL_GPIO_Init(GPIO_TypeDef *, GPIO_InitTypeDef *)" (declared at line 285 of "../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h")
+    HAL_GPIO_Init(STEPMOTOR_ENA_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(77): error:  #77-D: this declaration has no storage class or type specifier
+    GPIO_InitStruct.Pin = STEPMOTOR_SLEEP_PIN;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(77): error:  #65: expected a ";"
+    GPIO_InitStruct.Pin = STEPMOTOR_SLEEP_PIN;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(78): error:  #77-D: this declaration has no storage class or type specifier
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(78): error:  #65: expected a ";"
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(79): error:  #77-D: this declaration has no storage class or type specifier
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(79): error:  #65: expected a ";"
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(80): error:  #79: expected a type specifier
+    HAL_GPIO_Init(STEPMOTOR_SLEEP_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(80): error:  #79: expected a type specifier
+    HAL_GPIO_Init(STEPMOTOR_SLEEP_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(80): error:  #260-D: explicit type is missing ("int" assumed)
+    HAL_GPIO_Init(STEPMOTOR_SLEEP_PORT, &GPIO_InitStruct);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(83): error:  #79: expected a type specifier
+    DRV8825_OUTPUT_DISABLE();
+..\Src\bsp\StepMotor\bsp_StepMotor.c(83): error:  #79: expected a type specifier
+    DRV8825_OUTPUT_DISABLE();
+..\Src\bsp\StepMotor\bsp_StepMotor.c(83): error:  #757: constant "GPIO_PIN_RESET" is not a type name
+    DRV8825_OUTPUT_DISABLE();
+..\Src\bsp\StepMotor\bsp_StepMotor.c(83): error:  #260-D: explicit type is missing ("int" assumed)
+    DRV8825_OUTPUT_DISABLE();
+..\Src\bsp\StepMotor\bsp_StepMotor.c(83): error:  #147: declaration is incompatible with "void HAL_GPIO_WritePin(GPIO_TypeDef *, uint16_t, GPIO_PinState)" (declared at line 296 of "../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h")
+    DRV8825_OUTPUT_DISABLE();
+..\Src\bsp\StepMotor\bsp_StepMotor.c(84): error:  #169: expected a declaration
+  }
+..\Src\bsp\StepMotor\bsp_StepMotor.c(116): warning:  #12-D: parsing restarts here after previous syntax error
+    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(117): error:  #77-D: this declaration has no storage class or type specifier
+    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(117): error:  #65: expected a ";"
+    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+..\Src\bsp\StepMotor\bsp_StepMotor.c(118): error:  #79: expected a type specifier
+    HAL_TIMEx_MasterConfigSynchronization(&htimx_STEPMOTOR, &sMasterConfig);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(118): error:  #79: expected a type specifier
+    HAL_TIMEx_MasterConfigSynchronization(&htimx_STEPMOTOR, &sMasterConfig);
+..\Src\bsp\StepMotor\bsp_StepMotor.c(118): error:  #260-D: explicit type is missing ("int" assumed)
+    HAL_TIMEx_MasterConfigSynchronization(&htimx_STEPMOTOR, &sMasterConfig);
+..\Src\bsp\StepMotor\bsp_StepMotor.c: 2 warnings, 30 errors
+compiling bsp_spi.c...
+compiling a2_fun.c...
+..\Src\bsp\A2_FUN\a2_fun.c(299): error:  #29: expected an expression
+  <<<<<<< .mine
+..\Src\bsp\A2_FUN\a2_fun.c(300): error:  #65: expected a ";"
+                                        }
+..\Src\bsp\A2_FUN\a2_fun.c(303): error:  #29: expected an expression
+  =======
+..\Src\bsp\A2_FUN\a2_fun.c(307): error:  #29: expected an expression
+  >>>>>>> .theirs
+..\Src\bsp\A2_FUN\a2_fun.c(309): error:  #121: a case label may only be used within a switch
+                                   case 0x82 :   //背离马达的方向移动。
+..\Src\bsp\A2_FUN\a2_fun.c(318): error:  #29: expected an expression
+  <<<<<<< .mine
+..\Src\bsp\A2_FUN\a2_fun.c(327): error:  #29: expected an expression
+  =======
+..\Src\bsp\A2_FUN\a2_fun.c(335): warning:  #12-D: parsing restarts here after previous syntax error
+                                                printf("0x82 order \n");
+..\Src\bsp\A2_FUN\a2_fun.c(336): error:  #29: expected an expression
+  >>>>>>> .theirs
+..\Src\bsp\A2_FUN\a2_fun.c(337): error:  #65: expected a ";"
+                                          }
+..\Src\bsp\A2_FUN\a2_fun.c(338): error:  #116: a break statement may only be used within a loop or switch
+                                    break;
+..\Src\bsp\A2_FUN\a2_fun.c(339): error:  #121: a case label may only be used within a switch
+                          case 0x33 :
+..\Src\bsp\A2_FUN\a2_fun.c(342): error:  #29: expected an expression
+  <<<<<<< .mine
+..\Src\bsp\A2_FUN\a2_fun.c(347): error:  #29: expected an expression
+  =======
+..\Src\bsp\A2_FUN\a2_fun.c(352): error:  #29: expected an expression
+  >>>>>>> .theirs
+..\Src\bsp\A2_FUN\a2_fun.c(355): error:  #29: expected an expression
+  <<<<<<< .mine
+..\Src\bsp\A2_FUN\a2_fun.c(366): error:  #29: expected an expression
+  =======
+..\Src\bsp\A2_FUN\a2_fun.c(377): error:  #169: expected a declaration
+  >>>>>>> .theirs
+..\Src\bsp\A2_FUN\a2_fun.c(381): error:  #169: expected a declaration
+                          case 0xb0 :
+..\Src\bsp\A2_FUN\a2_fun.c(404): warning:  #12-D: parsing restarts here after previous syntax error
+                                         printf("order 0xb0 \n");       
+..\Src\bsp\A2_FUN\a2_fun.c(410): error:  #169: expected a declaration
+  >>>>>>> .theirs
+..\Src\bsp\A2_FUN\a2_fun.c(413): warning:  #12-D: parsing restarts here after previous syntax error
+                                break;
+..\Src\bsp\A2_FUN\a2_fun.c(415): error:  #169: expected a declaration
+                         case 0xa0 :    //重新设置原点
+..\Src\bsp\A2_FUN\a2_fun.c(427): warning:  #12-D: parsing restarts here after previous syntax error
+                                break;
+..\Src\bsp\A2_FUN\a2_fun.c(428): error:  #169: expected a declaration
+                        case 0x90 :
+..\Src\bsp\A2_FUN\a2_fun.c(443): warning:  #12-D: parsing restarts here after previous syntax error
+                                break;
+..\Src\bsp\A2_FUN\a2_fun.c(444): error:  #169: expected a declaration
+                   case 0xff:  //同上位机通讯
+..\Src\bsp\A2_FUN\a2_fun.c(467): warning:  #12-D: parsing restarts here after previous syntax error
+                                break;
+..\Src\bsp\A2_FUN\a2_fun.c(468): error:  #169: expected a declaration
+                        case 0xee :
+..\Src\bsp\A2_FUN\a2_fun.c(492): warning:  #12-D: parsing restarts here after previous syntax error
+                                  break;
+..\Src\bsp\A2_FUN\a2_fun.c(494): error:  #169: expected a declaration
+                        case 0xc0 :
+..\Src\bsp\A2_FUN\a2_fun.c(508): warning:  #12-D: parsing restarts here after previous syntax error
+                                break;
+..\Src\bsp\A2_FUN\a2_fun.c(509): error:  #169: expected a declaration
+                        case 0xd0 :
+..\Src\bsp\A2_FUN\a2_fun.c(523): warning:  #12-D: parsing restarts here after previous syntax error
+                                break;
+..\Src\bsp\A2_FUN\a2_fun.c(525): error:  #169: expected a declaration
+                        case 0x00 :
+..\Src\bsp\A2_FUN\a2_fun.c(535): warning:  #12-D: parsing restarts here after previous syntax error
+                                    A2_RX_STOP=1;
+..\Src\bsp\A2_FUN\a2_fun.c(536): warning:  #1295-D: Deprecated declaration DRV8825_StopMove - give arg types
+                                        DRV8825_StopMove();
+..\Src\bsp\A2_FUN\a2_fun.c(536): error:  #260-D: explicit type is missing ("int" assumed)
+                                        DRV8825_StopMove();
+..\Src\bsp\A2_FUN\a2_fun.c(536): error:  #147: declaration is incompatible with "void DRV8825_StopMove(void)" (declared at line 9 of "..\Inc\bsp\DRV8825/drv8825.h")
+                                        DRV8825_StopMove();
+..\Src\bsp\A2_FUN\a2_fun.c(537): error:  #169: expected a declaration
+                                 }
+..\Src\bsp\A2_FUN\a2_fun.c(541): warning:  #12-D: parsing restarts here after previous syntax error
+                                 break;
+..\Src\bsp\A2_FUN\a2_fun.c(543): error:  #169: expected a declaration
+                                default:
+..\Src\bsp\A2_FUN\a2_fun.c: 12 warnings, 30 errors
+".\FENGDI_PRO\FDI_PRO_500.axf" - 70 Error(s), 14 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE
   C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0
 
 <h2>Collection of Component Files used:</h2>
+Target not created.
 </pre>
 </body>
 </html>

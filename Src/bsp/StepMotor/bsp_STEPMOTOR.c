@@ -30,6 +30,11 @@ extern __IO uint8_t NewOrigin_flag;
 extern __IO uint8_t PB8_flag;
 __IO uint8_t END_STOP_FLAG=0;  //马达运行到终点，停止标志位
 extern __IO uint8_t NewOrigin_flag;  //设置新的原点，标志位。
+<<<<<<< HEAD
+=======
+extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
+
+>>>>>>> Branch_DRV8825_SPI_Slave_soft
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -255,7 +260,11 @@ void STEPMOTOR_AxisMoveRel( int32_t step, uint32_t speed)
   * 输入参数: targert_step: 目标位置的坐标
   *           speed : 移动的速度
   * 返 回 值: 无
+<<<<<<< HEAD
   * 说    明: 电机以给定的速度移动到指定位置坐标.?0x       0x   b0
+=======
+  * 说    明: 电机以给定的速度移动到指定位置坐标.? order:0xb0
+>>>>>>> Branch_DRV8825_SPI_Slave_soft
   *
  **********************************************************************/
 void STEPMOTOR_AxisMoveAbs( int32_t targert_step, uint32_t speed)
@@ -383,14 +392,13 @@ void STEPMOTOR_PC_AxisMoveAbs( uint8_t abs_high,uint8_t abs_mid,uint8_t abs_low,
     //rel_step=home_position-targert_step;
 	#endif
 	else
-   rel_step=step_position-ABS_Distance;	//wt.edit 2018.01.16
+       rel_step=step_position-ABS_Distance;	//wt.edit 2018.01.16
 	if(rel_step == 0)	
 	{
 		dir = 0;
 	}
 	else 
 	dir = -1;
-	
 	STEPMOTOR_AxisMoveRel(dir*rel_step,speed); 
 	
     
@@ -535,6 +543,13 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
 		   stop_flag=20;
 		   PulseNumbers=0;
 		  }
+         else if(NewOrigin_flag==1)
+		  {
+            NewOrigin_flag=0;
+		    PulseNumbers=0;
+		    step_count=0;
+		    step_position=0;
+		   }
 		  else
 		  PulseNumbers++;
           if(srd.dir==CW)
