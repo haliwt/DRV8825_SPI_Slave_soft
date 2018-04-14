@@ -42,7 +42,7 @@ extern uint8_t I2C_TX_FLAG;
 extern uint8_t I2C_TX_DATA;
 __IO uint8_t A2_RX_STOP=0;    //第二个马达，接受马达停止标志位。
 __IO uint8_t A2_ReadPulse=0; //读取第二个马达的脉冲数标志位
-
+extern __IO uint8_t stop_flag; //开机标志位
 /**********************************************************
  *
  *函数名称：
@@ -147,12 +147,9 @@ void A2_MOTOR_FUN(void)
 					  break;
 					  
 			  case 0xb0 :
-			  {
+			    {
 			     re_intrrupt_flag=0;
 				 PB8_flag=0;
-				// DRV8825_SLEEP_DISABLE() ; //高电平开始工作
-				 // HAL_Delay(10);
-				  home_position = Read_Origin_Position();
 				 STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
 				 if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
 						{
@@ -161,9 +158,7 @@ void A2_MOTOR_FUN(void)
 				 
 					//	printf("0Xb0 is OK \n");
 				}
-			  
-			  
-			 break;
+			  break;
 
 			 case 0xa0 :    //重新设置原点
 			 	    re_intrrupt_flag=0; 
@@ -285,7 +280,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				  case 0x02:
 					if(SPI_aRxBuffer[6]==0xb)
 					{
-					   A2_ReadPulse=1;
+					   A2_ReadPulse=0;
 			           repcdata[0] = SPI_aRxBuffer[3];
 					   repcdata[1] = SPI_aRxBuffer[4];
 					   repcdata[2] = SPI_aRxBuffer[5];
@@ -302,7 +297,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				   case 0x82 :   //背离马达的方向移动。
 					 if(SPI_aRxBuffer[6]==0xb) 
 				      {
-			               A2_ReadPulse=1;
+			               A2_ReadPulse=0;
 						   repcdata[0] = SPI_aRxBuffer[3];
 						   repcdata[1] = SPI_aRxBuffer[4];
 						   repcdata[2] = SPI_aRxBuffer[5];
@@ -321,7 +316,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			  case 0x33 :
 					  if(SPI_aRxBuffer[6]==0xb)
 			           {
-						A2_ReadPulse=1;
+						A2_ReadPulse=0;
 					    repcdata[0]=SPI_aRxBuffer[3];
 						repcdata[1]=SPI_aRxBuffer[4];
 						repcdata[2]=SPI_aRxBuffer[5];
@@ -341,7 +336,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			  case 0xb0 :
 			    if(SPI_aRxBuffer[6]==0xb)     
 			      {
-			        STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
+                    A2_ReadPulse=0;
+					STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
 					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 					  {
 						A2_RX_STOP=0;
@@ -355,7 +351,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			 case 0xa0 :    //重新设置原点
 				 if(SPI_aRxBuffer[6]==0xb)
 				 {
-			 	    Set_NewOrigin_Position();
+                    A2_ReadPulse=0;
+					Set_NewOrigin_Position();
 					printf("new origin psoition \n");
 					
 				 }
@@ -363,7 +360,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			case 0x90 :
                     if(SPI_aRxBuffer[6]==0xb)
                     {						
-			        SPI_RX_FLAG=0;
+			     
 					A2_ReadPulse=0;
 			        aRxBuffer[4]=SPI_aRxBuffer[4];
 				    aRxBuffer[5]=SPI_aRxBuffer[5];
@@ -483,17 +480,26 @@ void A1_Read_A2_DATA(void)
 	     uint8_t temp;
 		  switch(SPI_aRxBuffer[2])
 			{
-                #if 0
+                #if 1
 				case 0x03 :   //读取指令  读取马达实时位置脉冲数
                   {
-					   
-						  A1_ReadRealTime_A2_Value();
-					      I2C_MASTER_TX_DATA();
-					      printf("a2 0x03 reader pulsenumbers  \n");
+					if(A2_ReadPulse==1)
+				    {
+                      printf("motor has been stop \n");
+					  A1_ReadRealTime_A2_Value();
+					}
+					else if(stop_flag==0)
+			        {
+			             A1_ReadEeprom_A2_Value();
+						 I2C_MASTER_TX_DATA();
+			        }
+			        else
+			         A1_ReadRealTime_A2_Value();
+			            
 					
-				     	
-                    }
-					break;
+			        }
+					
+				 break;
 				#endif 
 				case 0x04 : //读取LED灯的亮度值
 				        A2_ReadPulse=0;

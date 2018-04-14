@@ -44,10 +44,11 @@ uint8_t  SPI_RX_FLAG=0;
 uint8_t SPI_RX_DATA=0;
 uint8_t I2C_TX_FLAG=0;
 uint8_t I2C_TX_DATA=0;
+extern __IO uint8_t stop_flag; //开机标志位
 extern __IO uint8_t END_STOP_FLAG;  //马达运行到终点，停止标志位
 extern __IO uint8_t A2_RX_STOP;
 extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
-
+extern __IO uint8_t END_A2_Read_Pulse;
 
 
 /* 扩展变量 ------------------------------------------------------------------*/
@@ -100,7 +101,7 @@ void SystemClock_Config(void)
 int main(void)
 {
   uint8_t txbuf[100];
-  uint8_t Mode_Count;
+  uint8_t Mode_Count,temp;
   // uint8_t DS18B20ID[8],temp;
  // float ftemp;
   /* 复位所有外设，初始化Flash接口和系统滴答定时器 */
@@ -117,7 +118,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.09 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.10 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
   memcpy(txbuf,"Data:2018.04.11\n",100);
@@ -195,14 +196,8 @@ int main(void)
 		   END_STOP_FLAG=0;
 		   Motor_Save_EndPosition();
         }
-		if(A2_ReadPulse==1)
-		{
-          A2_ReadPulse=0;
-		  A1_ReadRealTime_A2_Value();
-	      I2C_MASTER_TX_DATA();
-	      printf("a2 0x03 reader pulsenumbers  \n");
-
-		}
+		
+		
 		
 		
 	
@@ -432,15 +427,13 @@ if(HAL_UART_Receive_IT(&husartx,aRxBuffer,7)==HAL_OK )
 #if 1
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-  
   if(SPI_aRxBuffer[0]==0xa2)
   {
      SPI_RX_FLAG=1;
 	 
 	 if(SPI_aRxBuffer[1]==0x00)
 	 {
-		A2_ReadPulse=0;
-		 if(SPI_aRxBuffer[2]==0x00)
+	    if(SPI_aRxBuffer[2]==0x00)
 			{
               A2_RX_STOP=1;
 			}
@@ -448,10 +441,6 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	 else if (SPI_aRxBuffer[1]==0x01)
 	 {
 	    I2C_TX_DATA=1;
-	    if(SPI_aRxBuffer[2]==0x03)
-			{
-              A2_ReadPulse=1;
-			}
 	 }
   }
   else 
@@ -462,6 +451,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   
 	
 }
+
 #endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

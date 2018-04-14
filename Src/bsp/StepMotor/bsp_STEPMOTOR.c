@@ -31,7 +31,7 @@ extern __IO uint8_t PB8_flag;
 __IO uint8_t END_STOP_FLAG=0;  //马达运行到终点，停止标志位
 extern __IO uint8_t NewOrigin_flag;  //设置新的原点，标志位。
 extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
-
+__IO uint8_t END_A2_Read_Pulse=0;
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -264,11 +264,13 @@ void STEPMOTOR_AxisMoveAbs( int32_t targert_step, uint32_t speed)
 {
 	int32_t rel_step = 0;
 	 int8_t dir = -1;
-	rel_step = step_position - targert_step ; 	//获取当前位置和目标位置之间的步数值
+	//rel_step = step_position - targert_step ; 	//获取当前位置和目标位置之间的步数值
+	rel_step = step_count - targert_step ; 	//wt.edit 2018.04.14
 	if(stop_flag==0)  //wt.edit 2018.04.03
 	{
 	  stop_flag=21;
 	  rel_step=DRV8825_Read_CurrentPosition();   //负数--远离马达方向移动,-DR
+	  printf("power on first run 0xb0 \n");
 	}
 	
 	else if(rel_step == 0)	
@@ -301,7 +303,7 @@ void STEPMOTOR_AxisHome(uint16_t speed)
 {
 	 int32_t rel_step = 0;
 	 int8_t dir = -1;
-	 home_position = Read_Origin_Position();
+	
      rel_step = step_position - home_position ; 	//获取当前位置和目标位置之间的步数值
 	
 	if(rel_step == 0)	
@@ -314,29 +316,7 @@ void STEPMOTOR_AxisHome(uint16_t speed)
 	STEPMOTOR_AxisMoveRel(dir*rel_step,speed);
 }
 
-#if 0
-void STEPMOTOR_AxisHome(void)
-{
-   uint16_t tim_count;
-  //设置速度
-	//set_speed=200;
-  //srd.min_delay = (int32_t)(A_T_x10/set_speed);
-  Toggle_Pulse=DRV8825_ReadSpeed();
-  srd.min_delay=Toggle_Pulse;
-	
-  srd.dir = CCW; // 默认逆时针方向为回原点方向
-  STEPMOTOR_DIR_REVERSAL();
 
-  srd.run_state =RUN;
-
-  tim_count=__HAL_TIM_GET_COUNTER(&htimx_STEPMOTOR);
-	 HAL_TIM_OC_Start_IT(&htimx_STEPMOTOR,STEPMOTOR_TIM_CHANNEL_x); //wt.edit
-  __HAL_TIM_SET_COMPARE(&htimx_STEPMOTOR,STEPMOTOR_TIM_CHANNEL_x,tim_count+Toggle_Pulse); // 设置定时器比较值
-  TIM_CCxChannelCmd(STEPMOTOR_TIMx, STEPMOTOR_TIM_CHANNEL_x, TIM_CCx_ENABLE);// 使能定时器通道 
-	HAL_TIM_PWM_Start(&htimx_STEPMOTOR,TIM_CHANNEL_1);
-  DRV8825_OUTPUT_ENABLE();
-}
-#endif
 
 /*****************************************************
   *
@@ -385,7 +365,8 @@ void STEPMOTOR_PC_AxisMoveAbs( uint8_t abs_high,uint8_t abs_mid,uint8_t abs_low,
     //rel_step=home_position-targert_step;
 	#endif
 	else
-       rel_step=step_position-ABS_Distance;	//wt.edit 2018.01.16
+       //rel_step=step_position-ABS_Distance;	//wt.edit 2018.01.16
+       rel_step=step_count-ABS_Distance;        //wt.edit 2018.04.14
 	if(rel_step == 0)	
 	{
 		dir = 0;
@@ -396,52 +377,8 @@ void STEPMOTOR_PC_AxisMoveAbs( uint8_t abs_high,uint8_t abs_mid,uint8_t abs_low,
 	
     
 }
-/********************************************************************************************************************
-*
-*函数功能：马达移动的绝对位置坐标函数 ---逆时针
-*参数：1，2，3 共3个字节数，---脉冲数 0x01
-*返回函数：无
-*
-*********************************************************************************************************************/
-void STEPMOTOR_CCW_AxisMoveAbs( uint8_t ab_h,uint8_t ab_m,uint8_t ab_low, uint32_t speed) //绝对位置移动函数-逆时针
-{
-   
-	 int32_t ccw_targert_step;
-	 
-	ccw_targert_step=step_position -(ab_h<<16|ab_m<<8|ab_low);
-	//home_position = Read_Origin_Position();    //wt.edit 2018.01.16
-    //rel_step=home_position-targert_step;
-   // ccw_rel_step=step_position-ccw_targert_step;	//wt.edit 2018.01.16
-  // ccw_rel_step=step_position-ccw_targert_step;	//wt.edit 2018.01.16
-	//LimPosi=ccw_targert_step;
-  
-	 STEPMOTOR_AxisMoveRel(-1*ccw_targert_step ,speed); 
-   // STEPMOTOR_AxisMoveRel(dir*ccw_rel_step ,speed);
 
-}
-/********************************************************************************************************************
-*
-*函数功能：马达移动的绝对位置坐标函?--?--顺时针
-*参数：1，2，3 共3个字节数，---脉冲数 0x01
-*返回函数：无
-*
-*********************************************************************************************************************/
- void STEPMOTOR_CW_AxisMoveAbs( uint8_t abs_high,uint8_t abs_mid,uint8_t abs_low, uint32_t speed) //绝对位置移动函数-逆时针
- {
-       
-         int32_t cw_targert_step;
-	   
-        cw_targert_step=step_position - (int32_t)(abs_high<<16|abs_mid<<8|abs_low);
-        //home_position = Read_Origin_Position();    //wt.edit 2018.01.16
-        //rel_step=home_position-targert_step;
-       // cw_rel_step=step_position-cw_targert_step;    //wt.edit 2018.01.16
-       // LimNega=cw_targert_step; //wt.edit 2018.01.16
-      //  STEPMOTOR_AxisMoveRel(-1*cw_rel_step,speed); 
-	
-	
-	   STEPMOTOR_AxisMoveRel(1*cw_targert_step,speed);
-    
-   }
+
 
 
 /**************************************************************************************/
@@ -487,7 +424,7 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
         if((LimNega-PulseNumbers==0)||(LimNega<PulseNumbers))
 		  {
             srd.run_state = STOP; //停止运动
-           // step_position=0;
+           
           }
         else 
           {
@@ -500,7 +437,7 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
        if((LimPosi-PulseNumbers==0)||(LimPosi<PulseNumbers))
         {
           srd.run_state = STOP;
-        //  step_position=0;
+         
         }
         else 
         {
@@ -520,6 +457,7 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
           __HAL_TIM_CLEAR_FLAG(&htimx_STEPMOTOR, STEPMOTOR_TIM_FLAG_CCx);
           DRV8825_OUTPUT_DISABLE(); 
 		 END_STOP_FLAG=1;
+		 A2_ReadPulse=1;
 		 if(stop_flag==21)
 		  {
 			stop_flag=100;
@@ -620,4 +558,4 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
  }
 
 
-/******************* (C) COPYRIGHT 2015-2020 硬石嵌入式开发团队 *****END OF FILE****/
+
