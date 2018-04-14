@@ -118,7 +118,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.10 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.11 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
   memcpy(txbuf,"Data:2018.04.11\n",100);
