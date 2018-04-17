@@ -43,6 +43,8 @@ extern uint8_t I2C_TX_DATA;
 __IO uint8_t A2_RX_STOP=0;    //第二个马达，接受马达停止标志位。
 __IO uint8_t A2_ReadPulse=0; //读取第二个马达的脉冲数标志位
 extern __IO uint8_t stop_flag; //开机标志位
+__IO uint8_t END_A2_ReadData_FLAG=0;  //马达停止标志位
+
 /**********************************************************
  *
  *函数名称：
@@ -280,14 +282,15 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				  case 0x02:
 					if(SPI_aRxBuffer[6]==0xb)
 					{
-					   A2_ReadPulse=0;
+					   A2_ReadPulse=1;
+					   END_A2_ReadData_FLAG=0;
 			           repcdata[0] = SPI_aRxBuffer[3];
 					   repcdata[1] = SPI_aRxBuffer[4];
 					   repcdata[2] = SPI_aRxBuffer[5];
 			  	    DRV8825_CW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
 					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 					{
-						A2_RX_STOP=0;
+						
 						DRV8825_StopMove();
 					}
 					
@@ -297,7 +300,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				   case 0x82 :   //背离马达的方向移动。
 					 if(SPI_aRxBuffer[6]==0xb) 
 				      {
-			               A2_ReadPulse=0;
+			               A2_ReadPulse=1;
+						   END_A2_ReadData_FLAG=0;
 						   repcdata[0] = SPI_aRxBuffer[3];
 						   repcdata[1] = SPI_aRxBuffer[4];
 						   repcdata[2] = SPI_aRxBuffer[5];
@@ -306,7 +310,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 					      
 						  if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 					       {
-								A2_RX_STOP=0;
+								
 								DRV8825_StopMove();
 					       }   
 						  
@@ -316,7 +320,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			  case 0x33 :
 					  if(SPI_aRxBuffer[6]==0xb)
 			           {
-						A2_ReadPulse=0;
+						A2_ReadPulse=1;
+						END_A2_ReadData_FLAG=0;
 					    repcdata[0]=SPI_aRxBuffer[3];
 						repcdata[1]=SPI_aRxBuffer[4];
 						repcdata[2]=SPI_aRxBuffer[5];
@@ -325,7 +330,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
                         
 						if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 					       {
-								A2_RX_STOP=0;
+							
 								DRV8825_StopMove();
 					       }
 						 printf("motor works 0x33 order \n");
@@ -336,11 +341,12 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			  case 0xb0 :
 			    if(SPI_aRxBuffer[6]==0xb)     
 			      {
-                    A2_ReadPulse=0;
+                    A2_ReadPulse=1;
+					END_A2_ReadData_FLAG=0;
 					STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
 					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 					  {
-						A2_RX_STOP=0;
+						
 						DRV8825_StopMove();
 					   }   
 					 printf("order 0xb0 \n");	
@@ -351,7 +357,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			 case 0xa0 :    //重新设置原点
 				 if(SPI_aRxBuffer[6]==0xb)
 				 {
-                    A2_ReadPulse=0;
+                    
 					Set_NewOrigin_Position();
 					printf("new origin psoition \n");
 					
@@ -361,7 +367,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
                     if(SPI_aRxBuffer[6]==0xb)
                     {						
 			     
-					A2_ReadPulse=0;
+					
 			        aRxBuffer[4]=SPI_aRxBuffer[4];
 				    aRxBuffer[5]=SPI_aRxBuffer[5];
 					DRV8825_SetSpeed(aRxBuffer[4],aRxBuffer[5]);
@@ -376,7 +382,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 		   case 0xff:  //同上位机通讯
 			        if(SPI_aRxBuffer[6]==0xb)
 					{
-                    A2_ReadPulse=0;
+                  
 					LED2_ON;
 					LED1_ON;		  
 					HAL_Delay(200);
@@ -400,7 +406,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			case 0xee :
 				   if(SPI_aRxBuffer[6]==0xb)
 				   {
-				    A2_ReadPulse=0;
+				    END_A2_ReadData_FLAG=0;
 					printf("This is 0xee order \n");
 				    LED2_ON;
 					LED1_ON;		  
@@ -426,7 +432,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			case 0xc0 :
 				   if(SPI_aRxBuffer[6]==0xb)
 				   {
-                   A2_ReadPulse=0;
+                  
 				   Brightness=SPI_aRxBuffer[5];
 				   LAMP_Save_BrightValue(Brightness);
 				   GENERAL_TIMx_Init();
@@ -441,7 +447,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			case 0xd0 :
 				     if(SPI_aRxBuffer[6]==0xb)
 					 {
-						A2_ReadPulse=0;
+						
 						EEPROM_Clear_Buf();
 						HAL_Delay(100);
 						LED2_OFF;
@@ -453,15 +459,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 					 }
 				break;
-			#if 0
-			case 0x00 :
-				// if(SPI_aRxBuffer[6]==0xb)  //wt.edit 18.04.07
-				 {
-				    A2_RX_STOP=1;
-					DRV8825_StopMove();
-				 }
-				 break;
-			#endif
+			
 				default:
 					SPI_RX_FLAG=0;
 	    }	
@@ -480,29 +478,43 @@ void A1_Read_A2_DATA(void)
 	     uint8_t temp;
 		  switch(SPI_aRxBuffer[2])
 			{
-                #if 1
+               #if 0
 				case 0x03 :   //读取指令  读取马达实时位置脉冲数
-                  {
-					if(A2_ReadPulse==1)
-				    {
-                      printf("motor has been stop \n");
-					  A1_ReadRealTime_A2_Value();
-					}
-					else if(stop_flag==0)
+                  
+					if((stop_flag==0) && (A2_ReadPulse==0))
 			        {
-			             A1_ReadEeprom_A2_Value();
+                         A1_ReadEeprom_A2_Value();
 						 I2C_MASTER_TX_DATA();
+						 printf("A1 read A2 DATA fun() stop_flag=0 0x03 \n");
 			        }
-			        else
-			         A1_ReadRealTime_A2_Value();
-			            
+			        else if(END_A2_ReadData_FLAG==1)
+                    {
+                       printf("A2 Mator stop \n");
+                       do
+                       {
+                           A1_ReadRealTime_A2_Value();
+                           I2C_MASTER_TX_DATA(); 
+                       }while(0);
+                       for(temp=0;temp<10;temp++)
+                       {
+                        HAL_Delay(1000);
+                        HAL_Delay(1000);
+                       }
+                     }
+					else
+						{
+						 A1_ReadRealTime_A2_Value();
+				         I2C_MASTER_TX_DATA(); 
+						 printf("A1 read A2 DATA fun() 0x03 \n");
+						 if(END_A2_ReadData_FLAG==1)
+						     printf("A2 Mator stop \n");
+						}
 					
-			        }
-					
-				 break;
-				#endif 
+		          break;
+				#endif
+				
 				case 0x04 : //读取LED灯的亮度值
-				        A2_ReadPulse=0;
+				        
 						temp= LAMP_Read_BrightValue(); //读取亮度值
 						printf("BRV = %d \n",temp);
 				        i2c_tx_buffer[2]=temp;
@@ -510,20 +522,20 @@ void A1_Read_A2_DATA(void)
 					break;
 				
 				case 0x01:
-					A2_ReadPulse=0;
+					
 					printf("SPI_aRxBuffer[2]=0x01\n");
 					A1_ReadSpeed_A2_Value();
 					I2C_MASTER_TX_DATA();
 					break;
 				case 0xe0 :
-					A2_ReadPulse=0;
+					
 				    A1_ReadEeprom_A2_Value();
 				    I2C_MASTER_TX_DATA();
 					break;
 				default:
 					{
 						I2C_TX_DATA=0;
-						A2_ReadPulse=0;
+						
 					}
 			    
 		   } 

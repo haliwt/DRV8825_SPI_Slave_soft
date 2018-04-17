@@ -28,17 +28,12 @@ Project File Date:  03/24/2018
 Build target 'SPI_SLAVE'
 compiling main.c...
 ../Src/main.c(104): warning:  #177-D: variable "temp" was declared but never referenced
-    uint8_t Mode_Count,temp;
+    uint8_t txbuf[100],temp;
 ../Src/main.c: 1 warning, 0 errors
-compiling drv8825.c...
-..\Src\bsp\DRV8825\drv8825.c(548): warning:  #940-D: missing return statement at end of non-void function "A2_ReadRealTime_Judge_Stop"
-  }
-..\Src\bsp\DRV8825\drv8825.c: 1 warning, 0 errors
-compiling bsp_StepMotor.c...
 linking...
-Program Size: Code=23980 RO-data=368 RW-data=80 ZI-data=5312  
+Program Size: Code=24228 RO-data=368 RW-data=84 ZI-data=5308  
 FromELF: creating hex file...
-".\FENGDI_PRO\FDI_PRO_500.axf" - 0 Error(s), 2 Warning(s).
+".\FENGDI_PRO\FDI_PRO_500.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\DRV8825_SPI_Slave_soft\MDK-ARM\RTE

@@ -89,6 +89,7 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
 void I2C_MASTER_TX_DATA(void)
 {
     uint8_t i=0,pdata;
+	//printf("i2c_master_tx_data()\n");
 	for(i=0;i<3;i++)
 	{
 	  pdata=i2c_tx_buffer[i];

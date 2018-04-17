@@ -32,6 +32,7 @@ __IO uint8_t END_STOP_FLAG=0;  //马达运行到终点，停止标志位
 extern __IO uint8_t NewOrigin_flag;  //设置新的原点，标志位。
 extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
 __IO uint8_t END_A2_Read_Pulse=0;
+extern __IO uint8_t END_A2_ReadData_FLAG;  //马达停止标志位
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -447,17 +448,13 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
       switch(srd.run_state) // 运行状态
       {
         case STOP:
-		   //step_count = 0;  // 清零步数计数器 wt.edit 2018.02.05
-		  //step_count=PulseNumbers;  //wt.edit
-		   PulseNumbers=0;
-		  // save_flag=0;
-          // 关闭通道
-		  HAL_TIM_OC_Stop_IT(&htimx_STEPMOTOR,STEPMOTOR_TIM_CHANNEL_x); //wt.edit 
+		 PulseNumbers=0;
+        HAL_TIM_OC_Stop_IT(&htimx_STEPMOTOR,STEPMOTOR_TIM_CHANNEL_x); //wt.edit 
           TIM_CCxChannelCmd(STEPMOTOR_TIMx, STEPMOTOR_TIM_CHANNEL_x, TIM_CCx_DISABLE);        
           __HAL_TIM_CLEAR_FLAG(&htimx_STEPMOTOR, STEPMOTOR_TIM_FLAG_CCx);
           DRV8825_OUTPUT_DISABLE(); 
 		 END_STOP_FLAG=1;
-		 A2_ReadPulse=1;
+		 END_A2_ReadData_FLAG=1;
 		 if(stop_flag==21)
 		  {
 			stop_flag=100;

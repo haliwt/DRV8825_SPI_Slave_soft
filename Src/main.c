@@ -49,7 +49,8 @@ extern __IO uint8_t END_STOP_FLAG;  //马达运行到终点，停止标志位
 extern __IO uint8_t A2_RX_STOP;
 extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
 extern __IO uint8_t END_A2_Read_Pulse;
-
+__IO uint8_t A1_ReadData_FLAG=0;  //A1读取A2马达标志位。
+extern __IO uint8_t END_A2_ReadData_FLAG;  //???????
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -100,8 +101,8 @@ void SystemClock_Config(void)
   */
 int main(void)
 {
-  uint8_t txbuf[100];
-  uint8_t Mode_Count,temp;
+  uint8_t txbuf[100],temp;
+  uint8_t Mode_Count;
   // uint8_t DS18B20ID[8],temp;
  // float ftemp;
   /* 复位所有外设，初始化Flash接口和系统滴答定时器 */
@@ -118,7 +119,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.11 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.12 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
   memcpy(txbuf,"Data:2018.04.11\n",100);
@@ -161,7 +162,6 @@ int main(void)
       if(SPI_RX_FLAG==1)
 		{
 		 SPI_RX_FLAG=0;
-		 A2_ReadPulse=0;
 		 A1_CONTROL_A2_MOTOR_FUN(); 
 		}
 	  if(I2C_TX_DATA==1)
@@ -196,7 +196,51 @@ int main(void)
 		   END_STOP_FLAG=0;
 		   Motor_Save_EndPosition();
         }
-		
+		if(A1_ReadData_FLAG==1)
+		{
+           A1_ReadData_FLAG=0;
+		   if((stop_flag==0) && (A2_ReadPulse==0))
+	        {
+                 A1_ReadEeprom_A2_Value();
+				 I2C_MASTER_TX_DATA();
+				 printf("A1 read A2 DATA fun() stop_flag=0 0x03 \n");
+	        }
+	       else if(END_A2_ReadData_FLAG==1)
+            {
+               printf("A2 Mator stop \n");
+               
+                   A1_ReadRealTime_A2_Value();
+                   I2C_MASTER_TX_DATA(); 
+              
+                    LED2_ON;
+					LED1_ON;		  
+					HAL_Delay(200);
+					LED2_OFF;
+					LED1_OFF;
+					HAL_Delay(200);
+					LED2_ON;
+					LED1_ON;
+					HAL_Delay(200);
+					LED2_OFF;
+					LED1_OFF;
+					HAL_Delay(200);
+					LED2_ON;
+					LED1_ON;
+					HAL_Delay(200);
+					LED2_OFF;
+					LED1_OFF;
+					HAL_Delay(200);
+                    
+            }
+			else 
+			{
+				 A1_ReadRealTime_A2_Value();
+		         I2C_MASTER_TX_DATA(); 
+				 printf("A1 read A2 DATA fun() 0x03 \n");
+				 
+			}
+
+		}
 		
 		
 		
@@ -441,12 +485,18 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	 else if (SPI_aRxBuffer[1]==0x01)
 	 {
 	    I2C_TX_DATA=1;
+		if(SPI_aRxBuffer[2]==0x03)
+			{
+                A1_ReadData_FLAG=1;
+		    }
 	 }
   }
   else 
   {
-      HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
-	  printf("SPI_receive data error \n");
+      SPI_RX_FLAG=0;
+	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+      printf("SPI_receive data error \n");
+	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
   }
   
 	

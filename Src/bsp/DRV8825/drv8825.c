@@ -330,7 +330,7 @@ void Display_EEPROM_Value(void)
 		  
 		// temp=(I2c_Buf_Read[3]<<24)|(I2c_Buf_Read[2]<<16)|(I2c_Buf_Read[1]<<8)|(I2c_Buf_Read[0]);
       
-	      printf("real position= %ld \n",real_value);
+	      printf("EEPROM real position= %ld \n",real_value);
          HAL_UART_Transmit(&husartx,sendbuffer,6,12);		
        
          }
@@ -513,11 +513,7 @@ void  A1_ReadRealTime_A2_Value(void)
 	        i2c_tx_buffer[1]=real_value>>8 & 0xff;
 	        i2c_tx_buffer[0]=real_value>>16 & 0xff; //最高数据位
            
-         
-           
-           printf("real position= %ld \n",real_value);
-          
-		   I2C_MASTER_TX_DATA();
+        printf("A2 read real position= %ld \n",real_value);
           
 } 
        
@@ -536,6 +532,7 @@ uint8_t  A2_ReadRealTime_Judge_Stop(void)
        uint32_t real_value,judge_value;
 	   real_value=step_count;
         HAL_Delay(500);
+     
         judge_value=step_count;
         if(real_value==judge_value)
         {
@@ -611,7 +608,7 @@ void A1_ReadEeprom_A2_Value(void)
 		 
 		  
 		// temp=(I2c_Buf_Read[3]<<24)|(I2c_Buf_Read[2]<<16)|(I2c_Buf_Read[1]<<8)|(I2c_Buf_Read[0]);
-          printf("EEPROM position= %d \n",value);
+          printf("A1 read EEPROM position= %d \n",value);
 		
 	    }  
 
