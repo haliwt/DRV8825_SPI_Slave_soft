@@ -122,7 +122,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.13 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.14 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
   memcpy(txbuf,"Data:2018.04.11\n",100);
@@ -154,23 +154,20 @@ int main(void)
   DS18B20_GetTemp_MatchRom(DS18B20ID);
   HAL_Delay(100);
   #endif 
-   		
   HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
    
   while (1)
   {
 	  
-	  DRV8825_SLEEP_DISABLE() ; //高电平开始工作
+	  
 	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.22
       if(SPI_RX_FLAG==1)
 		{
-         RX_JUDGE=0;
 		 SPI_RX_FLAG=0;
 		 A1_CONTROL_A2_MOTOR_FUN(); 
 		}
 	  if(I2C_TX_DATA==1)
 		{
-           RX_JUDGE=0;
 		   I2C_TX_DATA=0;
 		   A1_Read_A2_DATA();
 		}
@@ -190,7 +187,6 @@ int main(void)
 		
 		if((HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)||(A2_RX_STOP==1))
 		{
-            RX_JUDGE=0;
 			PB8_flag=1;
 			DRV8825_StopMove();
 			A2_RX_STOP=0;
@@ -199,13 +195,11 @@ int main(void)
 		}
 		if( END_STOP_FLAG==1)  //马达运行到终点，停止标志位
 		{
-           RX_JUDGE=0;
 		   END_STOP_FLAG=0;
 		   Motor_Save_EndPosition();
         }
 		if(A1_ReadData_FLAG==1)
 		{
-           RX_JUDGE=0;
 		   A1_ReadData_FLAG=0;
 		   if((stop_flag==0) && (A2_ReadPulse==0))
 	        {
@@ -256,12 +250,20 @@ int main(void)
 
 		}
 
-		if(RX_JUDGE==1)
+		if(RX_JUDGE==1) //wt.edit 2018.04.22
 	    {
           RX_JUDGE=0;
 		  //HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.
           printf("SPI_receive data error \n");
-	      HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+		  HAL_Delay(100);
+	     // HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+		}
+		if(KEY3_StateRead()==KEY_DOWN)
+	    {
+            PB8_flag=1;
+			DRV8825_StopMove();
+			A2_RX_STOP=0;
+
 		}
 		
 		
@@ -508,8 +510,8 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	 }
 	 else if (SPI_aRxBuffer[1]==0x01)
 	 {
-	    RX_JUDGE=0;
 		I2C_TX_DATA=1;
+		SPI_RX_FLAG=0;
 		if(SPI_aRxBuffer[2]==0x03)
 			{
                 if(END_A2_ReadData_FLAG==1) //wt.edit 2018.04.22
@@ -518,7 +520,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 				   A1_ReadData_Stop=1;
 				   A1_ReadData_FLAG=1;
 				   TX_Times++;
-				   if(TX_Times > 250)
+				   if(TX_Times ==255)
 				   TX_Times=4;
 				   
             	}

@@ -44,6 +44,9 @@ __IO uint8_t A2_RX_STOP=0;    //第二个马达，接受马达停止标志位。
 __IO uint8_t A2_ReadPulse=0; //读取第二个马达的脉冲数标志位
 extern __IO uint8_t stop_flag; //开机标志位
 __IO uint8_t END_A2_ReadData_FLAG=0;  //马达停止标志位
+extern __IO uint8_t TX_Times;  //马达停止后，向A1 发送的数据次数
+extern __IO uint8_t A1_ReadData_Stop;  //马达读取速度，等于零。
+
 
 /**********************************************************
  *
@@ -62,6 +65,7 @@ void A2_MOTOR_FUN(void)
 	 switch(judge_data)
 		   	{
               case 0x02 :
+			  	    DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
 				    re_intrrupt_flag=0;
 					PB8_flag=0;
 			  	   // DRV8825_SLEEP_DISABLE(); //高电平开始工作,解除休眠状态
@@ -96,6 +100,7 @@ void A2_MOTOR_FUN(void)
 					
 			  case 0x82 :
 					  {
+					  DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
 					  re_intrrupt_flag=0;
 					  PB8_flag=0;
 					 // DRV8825_SLEEP_DISABLE(); //高电平开始工作,解除休眠状态	
@@ -128,6 +133,7 @@ void A2_MOTOR_FUN(void)
 				    break;
 			  case 0x33 :
 					  {
+                        DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
 						re_intrrupt_flag=0; 
 						PB8_flag=0;
                      // DRV8825_SLEEP_DISABLE() ; //高电平开始工作
@@ -282,7 +288,10 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				  case 0x02:
 					if(SPI_aRxBuffer[6]==0xb)
 					{
+                       DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
 					   A2_ReadPulse=1;
+					   TX_Times=0;
+					   A1_ReadData_Stop=0;  
 					   END_A2_ReadData_FLAG=0;
 			           repcdata[0] = SPI_aRxBuffer[3];
 					   repcdata[1] = SPI_aRxBuffer[4];
@@ -300,8 +309,11 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				   case 0x82 :   //背离马达的方向移动。
 					 if(SPI_aRxBuffer[6]==0xb) 
 				      {
-			               A2_ReadPulse=1;
-						   END_A2_ReadData_FLAG=0;
+                           DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
+						   TX_Times=0;
+						   A2_ReadPulse=1;   //开机第一次读取EEPROM值，标志位
+						   END_A2_ReadData_FLAG=0;  //
+						   A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 						   repcdata[0] = SPI_aRxBuffer[3];
 						   repcdata[1] = SPI_aRxBuffer[4];
 						   repcdata[2] = SPI_aRxBuffer[5];
@@ -320,7 +332,10 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			  case 0x33 :
 					  if(SPI_aRxBuffer[6]==0xb)
 			           {
+                        DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
+						TX_Times=0;
 						A2_ReadPulse=1;
+						A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 						END_A2_ReadData_FLAG=0;
 					    repcdata[0]=SPI_aRxBuffer[3];
 						repcdata[1]=SPI_aRxBuffer[4];
@@ -341,7 +356,10 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			  case 0xb0 :
 			    if(SPI_aRxBuffer[6]==0xb)     
 			      {
-                    A2_ReadPulse=1;
+                    DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
+					TX_Times=0;
+					A2_ReadPulse=1;
+					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 					END_A2_ReadData_FLAG=0;
 					STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
 					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
@@ -382,7 +400,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 		   case 0xff:  //同上位机通讯
 			        if(SPI_aRxBuffer[6]==0xb)
 					{
-                  
+                    END_A2_ReadData_FLAG=0;
+					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 					LED2_ON;
 					LED1_ON;		  
 					HAL_Delay(200);
@@ -407,6 +426,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				   if(SPI_aRxBuffer[6]==0xb)
 				   {
 				    END_A2_ReadData_FLAG=0;
+					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 					printf("This is 0xee order \n");
 				    LED2_ON;
 					LED1_ON;		  
@@ -433,6 +453,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				   if(SPI_aRxBuffer[6]==0xb)
 				   {
                   
+                   END_A2_ReadData_FLAG=0;
 				   Brightness=SPI_aRxBuffer[5];
 				   LAMP_Save_BrightValue(Brightness);
 				   GENERAL_TIMx_Init();
@@ -447,7 +468,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			case 0xd0 :
 				     if(SPI_aRxBuffer[6]==0xb)
 					 {
-						
+						END_A2_ReadData_FLAG=0;
 						EEPROM_Clear_Buf();
 						HAL_Delay(100);
 						LED2_OFF;
