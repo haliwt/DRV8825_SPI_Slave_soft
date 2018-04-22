@@ -330,7 +330,7 @@ void Display_EEPROM_Value(void)
 		  
 		// temp=(I2c_Buf_Read[3]<<24)|(I2c_Buf_Read[2]<<16)|(I2c_Buf_Read[1]<<8)|(I2c_Buf_Read[0]);
       
-	      printf("EEPROM real position= %ld \n",real_value);
+	      printf("real position= %ld \n",real_value);
          HAL_UART_Transmit(&husartx,sendbuffer,6,12);		
        
          }
@@ -394,9 +394,7 @@ void EEPROM_Clear_Buf(void)
 void Set_NewOrigin_Position(void)
 {
     uint8_t flag,flag_w,i;
-
     NewOrigin_flag=1;  //wt.2018.04.11 add item
-
 
     PulseNumbers=0;
     step_count=0;
@@ -422,11 +420,10 @@ void Set_NewOrigin_Position(void)
 	  if(flag_w==1) //表示写入成功
 	  {
 	    LED1_ON;
-        HAL_Delay(50);
+		HAL_Delay(50);
 		LED1_OFF;
 		HAL_Delay(50);
 		LED1_ON;
-
 	 }
 	else 
    	{
@@ -516,7 +513,11 @@ void  A1_ReadRealTime_A2_Value(void)
 	        i2c_tx_buffer[1]=real_value>>8 & 0xff;
 	        i2c_tx_buffer[0]=real_value>>16 & 0xff; //最高数据位
            
-        printf("A2 read real position= %ld \n",real_value);
+        
+           
+           printf("real position= %ld \n",real_value);
+          
+		   I2C_MASTER_TX_DATA();
           
 } 
        
@@ -529,7 +530,7 @@ void  A1_ReadRealTime_A2_Value(void)
  *
  *
 ******************************************************/
-#if 0
+#if 1
 uint8_t  A2_ReadRealTime_Judge_Stop(void)
 {
        uint32_t real_value,judge_value;
@@ -546,13 +547,9 @@ uint8_t  A2_ReadRealTime_Judge_Stop(void)
         else 
             return 0;
 }
-#endif
-
-
-
         
 
-
+#endif
 /***********************************************************
 *
 *函数名：
@@ -613,9 +610,9 @@ void A1_ReadEeprom_A2_Value(void)
 		
 		 value=temp1+temp2+temp3+temp4;
 		 
-		  
+		  I2C_MASTER_TX_DATA();
 		// temp=(I2c_Buf_Read[3]<<24)|(I2c_Buf_Read[2]<<16)|(I2c_Buf_Read[1]<<8)|(I2c_Buf_Read[0]);
-          printf("A1 read EEPROM position= %d \n",value);
+          printf("EEPROM position= %d \n",value);
 		
 	    }  
 
