@@ -44,11 +44,16 @@ uint8_t  SPI_RX_FLAG=0;
 uint8_t SPI_RX_DATA=0;
 uint8_t I2C_TX_FLAG=0;
 uint8_t I2C_TX_DATA=0;
+extern __IO uint8_t stop_flag; //开机标志位
 extern __IO uint8_t END_STOP_FLAG;  //马达运行到终点，停止标志位
 extern __IO uint8_t A2_RX_STOP;
 extern __IO uint8_t A2_ReadPulse; //读取第二个马达的脉冲数标志位
-
-
+extern __IO uint8_t END_A2_Read_Pulse;
+__IO uint8_t A1_ReadData_FLAG=0;  //A1读取A2马达标志位。
+extern __IO uint8_t END_A2_ReadData_FLAG;  //???????
+__IO uint8_t A1_ReadData_Stop=0;  //马达读取速度，等于零。
+__IO uint8_t TX_Times=0;      //马达2读取实时发送的数据次数，马达停止。
+__IO uint8_t RX_JUDGE=0;   //接受判断
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -117,13 +122,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-<<<<<<< .mine
-  memcpy(txbuf,"This SPI_Slave code of version 7.06 \n",100);
-=======
-  memcpy(txbuf,"This SPI_Slave code of version 7.09 \n",100);
->>>>>>> .theirs
-  HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
-  
+  memcpy(txbuf,"This SPI_Slave code of version 7.13 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   
   memcpy(txbuf,"Data:2018.04.11\n",100);
@@ -162,21 +161,21 @@ int main(void)
   {
 	  
 	  DRV8825_SLEEP_DISABLE() ; //高电平开始工作
-	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.22
       if(SPI_RX_FLAG==1)
 		{
+         RX_JUDGE=0;
 		 SPI_RX_FLAG=0;
-		 A2_ReadPulse=0;
 		 A1_CONTROL_A2_MOTOR_FUN(); 
 		}
 	  if(I2C_TX_DATA==1)
 		{
-           I2C_TX_DATA=0;
+           RX_JUDGE=0;
+		   I2C_TX_DATA=0;
 		   A1_Read_A2_DATA();
 		}
 	  if(re_intrrupt_flag==1)
 	  	{
-	  	    A2_MOTOR_FUN();
             re_intrrupt_flag=0;
 			A2_MOTOR_FUN();
 	  	}
@@ -189,9 +188,10 @@ int main(void)
 			  
 		}
 		
-		if((A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
+		if((HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)||(A2_RX_STOP==1))
 		{
-		    PB8_flag=1;
+            RX_JUDGE=0;
+			PB8_flag=1;
 			DRV8825_StopMove();
 			A2_RX_STOP=0;
 			//printf("a2_rx_stop=1\n");
@@ -199,17 +199,71 @@ int main(void)
 		}
 		if( END_STOP_FLAG==1)  //马达运行到终点，停止标志位
 		{
+           RX_JUDGE=0;
 		   END_STOP_FLAG=0;
 		   Motor_Save_EndPosition();
         }
-		if(A2_ReadPulse==1)
+		if(A1_ReadData_FLAG==1)
 		{
-          A2_ReadPulse=0;
-		  A1_ReadRealTime_A2_Value();
-	      I2C_MASTER_TX_DATA();
-	      printf("a2 0x03 reader pulsenumbers  \n");
+           RX_JUDGE=0;
+		   A1_ReadData_FLAG=0;
+		   if((stop_flag==0) && (A2_ReadPulse==0))
+	        {
+                 A1_ReadEeprom_A2_Value();
+				 I2C_MASTER_TX_DATA();
+				 printf("A1 read A2 DATA fun() stop_flag=0 0x03 \n");
+	        }
+	       else if((END_A2_ReadData_FLAG==1) || (A1_ReadData_Stop==1))
+            {
+                  
+				  printf("A2 Mator stop \n");
+				  A1_ReadData_Stop=0;
+				  if(TX_Times < 3)
+				   {
+					   A1_ReadRealTime_A2_Value();
+					   I2C_MASTER_TX_DATA(); 
+                   }
+                    LED2_OFF;
+					LED1_OFF;		  
+					HAL_Delay(200);
+					LED2_OFF;
+					LED1_OFF;
+					HAL_Delay(200);
+					LED2_ON;
+					LED1_ON;
+					HAL_Delay(200);
+					LED2_OFF;
+					LED1_OFF;
+					HAL_Delay(200);
+					LED2_ON;
+					LED1_ON;
+					HAL_Delay(200);
+					LED2_OFF;
+					LED1_OFF;
+					HAL_Delay(200);
+					LED2_ON;
+					LED1_ON;
+                    
+            }
+			else
+			{
+				 TX_Times=0;
+				 A1_ReadRealTime_A2_Value();
+		         I2C_MASTER_TX_DATA(); 
+				 printf("A1 read A2 DATA fun() 0x03 \n");
+				 
+			}
 
 		}
+
+		if(RX_JUDGE==1)
+	    {
+          RX_JUDGE=0;
+		  //HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.
+          printf("SPI_receive data error \n");
+	      HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
+		}
+		
 		
 		
 	
@@ -237,14 +291,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
    
     __HAL_GPIO_EXTI_CLEAR_IT(KEY3_GPIO_PIN);
-	if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
 	if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
 		{
 		  DRV8825_StopMove();
 		}
-	//HAL_UART_Transmit(&husartx,aRxBuffer,7,7);
- // if(HAL_UART_Receive_IT(&husartx,aRxBuffer,7)==HAL_OK )
- // if (HAL_UART_GetState(&husartx) == ( HAL_UART_STATE_BUSY_RX || HAL_UART_STATE_BUSY ))
 
   
 if(HAL_UART_Receive_IT(&husartx,aRxBuffer,7)==HAL_OK )
@@ -443,39 +493,55 @@ if(HAL_UART_Receive_IT(&husartx,aRxBuffer,7)==HAL_OK )
 #if 1
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-  
+ 
   if(SPI_aRxBuffer[0]==0xa2)
   {
-     //SPI_RX_FLAG=1;
-	 
+     RX_JUDGE=0;
 	 if(SPI_aRxBuffer[1]==0x00)
 	 {
-		A2_ReadPulse=0;
-		 if(SPI_aRxBuffer[2]==0x00)
-		 SPI_RX_FLAG=1;
-		 if(SPI_aRxBuffer[2]==0x00)
+        SPI_RX_FLAG=1;
+		if(SPI_aRxBuffer[2]==0x00)
 			{
               A2_RX_STOP=1;
+			  SPI_RX_FLAG=0;
 			}
 	 }
-	 if (SPI_aRxBuffer[1]==0x01)
+	 else if (SPI_aRxBuffer[1]==0x01)
 	 {
-	    I2C_TX_DATA=1;
-	    if(SPI_aRxBuffer[2]==0x03)
+	    RX_JUDGE=0;
+		I2C_TX_DATA=1;
+		if(SPI_aRxBuffer[2]==0x03)
 			{
-              A2_ReadPulse=1;
-			}
+                if(END_A2_ReadData_FLAG==1) //wt.edit 2018.04.22
+            	{
+				   I2C_TX_DATA=0;
+				   A1_ReadData_Stop=1;
+				   A1_ReadData_FLAG=1;
+				   TX_Times++;
+				   if(TX_Times > 250)
+				   TX_Times=4;
+				   
+            	}
+			    else
+				{
+				 A1_ReadData_FLAG=1;
+				 A1_ReadData_Stop=0;
+				 I2C_TX_DATA=0;
+				}
+		    }
 	 }
   }
   else 
   {
-      HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
-	  printf("SPI_receive data error \n");
+      RX_JUDGE=1;
+     //HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.
+     // printf("SPI_receive data error \n");
+	 // HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
   }
   
-  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
 	
 }
+
 #endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

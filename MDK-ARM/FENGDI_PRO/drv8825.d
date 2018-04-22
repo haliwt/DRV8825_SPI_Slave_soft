@@ -67,3 +67,4 @@
 .\fengdi_pro\drv8825.o: ..\Inc\bsp\lamp/bsp_lamp.h
 .\fengdi_pro\drv8825.o: ..\Inc\bsp\GeneralTIM/bsp_GeneralTIM.h
 .\fengdi_pro\drv8825.o: ..\Inc\bsp\DS18B20/bsp_DS18B20.h
+.\fengdi_pro\drv8825.o: ..\Inc\bsp\i2c_slave/bsp_I2C.h
