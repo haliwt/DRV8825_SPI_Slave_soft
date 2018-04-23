@@ -297,11 +297,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 					   repcdata[1] = SPI_aRxBuffer[4];
 					   repcdata[2] = SPI_aRxBuffer[5];
 			  	    DRV8825_CW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
-					{
-						
-						DRV8825_StopMove();
-					}
+				      HAL_Delay(100); //wt.edit 2018.04.23
 					
 					   printf("0x02 order \n");
 	         	    }
@@ -317,14 +313,10 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						   repcdata[0] = SPI_aRxBuffer[3];
 						   repcdata[1] = SPI_aRxBuffer[4];
 						   repcdata[2] = SPI_aRxBuffer[5];
-						
+						  
 						  DRV8825_CCW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-					      
-						  if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
-					       {
-								
-								DRV8825_StopMove();
-					       }   
+					       HAL_Delay(100); //wt.edit 2018.04.23
+						 
 						  
 						printf("0x82 order \n");
 					  }
@@ -342,35 +334,24 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 						repcdata[2]=SPI_aRxBuffer[5];
 						
 						STEPMOTOR_PC_AxisMoveAbs( repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-                        
-						if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
-					       {
-							
-								DRV8825_StopMove();
-					       }
-						 printf("motor works 0x33 order \n");
+                        HAL_Delay(100); //wt.edit 2018.04.23
+						printf("0x33 order \n");
+						
 					    }
 			        
 					  break;
 					  
 			  case 0xb0 :
 			    if(SPI_aRxBuffer[6]==0xb)     
-			      {
+			      
                     DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
 					TX_Times=0;
 					A2_ReadPulse=1;
 					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 					END_A2_ReadData_FLAG=0;
 					STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
-					if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
-					  {
-						
-						DRV8825_StopMove();
-					   }   
-					 printf("order 0xb0 \n");	
-				    }
-				  
-			        break;
+				    HAL_Delay(100); //wt.edit 2018.04.23
+				break;
 
 			 case 0xa0 :    //重新设置原点
 				 if(SPI_aRxBuffer[6]==0xb)
@@ -378,17 +359,17 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
                     
 					Set_NewOrigin_Position();
 					printf("new origin psoition \n");
+					HAL_Delay(100); //wt.edit 2018.04.23
 					
 				 }
 			 	break;
 			case 0x90 :
                     if(SPI_aRxBuffer[6]==0xb)
                     {						
-			     
-					
 			        aRxBuffer[4]=SPI_aRxBuffer[4];
 				    aRxBuffer[5]=SPI_aRxBuffer[5];
 					DRV8825_SetSpeed(aRxBuffer[4],aRxBuffer[5]);
+					HAL_Delay(100); //wt.edit 2018.04.23
 					HAL_Delay(30);
 					LED2_OFF;
 					LED1_OFF;
@@ -402,6 +383,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 					{
                     END_A2_ReadData_FLAG=0;
 					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
+					HAL_Delay(100); //wt.edit 2018.04.23
 					LED2_ON;
 					LED1_ON;		  
 					HAL_Delay(200);
@@ -428,6 +410,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				    END_A2_ReadData_FLAG=0;
 					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 					printf("This is 0xee order \n");
+					HAL_Delay(100); //wt.edit 2018.04.23
 				    LED2_ON;
 					LED1_ON;		  
 					HAL_Delay(200);
