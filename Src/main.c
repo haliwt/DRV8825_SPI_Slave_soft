@@ -122,13 +122,8 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.14 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.15 . Data:2018.04.23 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
-  
-  memcpy(txbuf,"Data:2018.04.11\n",100);
-  HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
-  
- 
   /* 使能接收，进入中断回调函数 */
   HAL_UART_Receive_IT(&husartx,aRxBuffer,7);
   HAL_TIM_PWM_Start(&htimx,TIM_CHANNEL_1);//HAL_TIM_PWM_Start(&htimx,TIM_CHANNEL_1);
@@ -136,29 +131,10 @@ int main(void)
   Brightness=LAMP_Read_BrightValue(); 
   GENERAL_TIMx_Init();
   HAL_TIM_PWM_Start(&htimx,TIM_CHANNEL_4); 
-  #if 0  
-   printf("DS18B20温度传感器信息读取\n");
-  while(DS18B20_Init())	
-  {
-		printf("DS18B20温度传感器不存在\n");    
-        HAL_Delay(1000);
-	    break;
-  }
-  printf("检测到DS18B20温度传感器，并初始化成功\n");
-  DS18B20_ReadId(DS18B20ID);
-  printf("DS18B20的序列号是： 0x");  
-	for ( i = 0; i < 8; i ++ )             
-	  printf ( "%.2X", DS18B20ID[i]);
-  printf("\n");  
-  
-  DS18B20_GetTemp_MatchRom(DS18B20ID);
-  HAL_Delay(100);
-  #endif 
   HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
    
   while (1)
   {
-	  
 	  
 	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.22
       if(SPI_RX_FLAG==1)
@@ -216,8 +192,12 @@ int main(void)
 				   {
 					   A1_ReadRealTime_A2_Value();
 					   I2C_MASTER_TX_DATA(); 
+					   HAL_Delay(200);
+					   printf("TX_Times= %d \n",TX_Times);
                    }
-                    LED2_OFF;
+				  HAL_Delay(200); //wt.edit 2018.04.23
+				  printf("Tx send over TX_Times= %d \n",TX_Times);
+				    LED2_OFF;
 					LED1_OFF;		  
 					HAL_Delay(200);
 					LED2_OFF;
@@ -244,7 +224,10 @@ int main(void)
 				 TX_Times=0;
 				 A1_ReadRealTime_A2_Value();
 		         I2C_MASTER_TX_DATA(); 
+				 HAL_Delay(200);
 				 printf("A1 read A2 DATA fun() 0x03 \n");
+				 HAL_Delay(100);
+				 
 				 
 			}
 
@@ -253,11 +236,9 @@ int main(void)
 		if(RX_JUDGE==1) //wt.edit 2018.04.22
 	    {
           RX_JUDGE=0;
-		  //HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.
-          printf("SPI_receive data error \n");
-		  HAL_Delay(100);
-	     // HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
-		}
+	      printf("SPI_receive data error \n");
+		  
+	    }
 		if(KEY3_StateRead()==KEY_DOWN)
 	    {
             PB8_flag=1;
@@ -520,8 +501,10 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 				   A1_ReadData_Stop=1;
 				   A1_ReadData_FLAG=1;
 				   TX_Times++;
-				   if(TX_Times ==255)
-				   TX_Times=4;
+				   if(TX_Times >10)
+				   {
+				     TX_Times=4;
+				   }
 				   
             	}
 			    else
