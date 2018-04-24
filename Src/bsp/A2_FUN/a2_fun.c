@@ -345,6 +345,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 			    if(SPI_aRxBuffer[6]==0xb)     
 			      
                     DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
+                    
 					TX_Times=0;
 					A2_ReadPulse=1;
 					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
@@ -357,6 +358,8 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				 if(SPI_aRxBuffer[6]==0xb)
 				 {
                     
+                    END_A2_ReadData_FLAG=0;
+					A1_ReadData_Stop=0; 
 					Set_NewOrigin_Position();
 					printf("new origin psoition \n");
 					HAL_Delay(100); //wt.edit 2018.04.23
@@ -437,6 +440,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				   {
                   
                    END_A2_ReadData_FLAG=0;
+				   A1_ReadData_Stop=0;
 				   Brightness=SPI_aRxBuffer[5];
 				   LAMP_Save_BrightValue(Brightness);
 				   GENERAL_TIMx_Init();
@@ -452,6 +456,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				     if(SPI_aRxBuffer[6]==0xb)
 					 {
 						END_A2_ReadData_FLAG=0;
+						A1_ReadData_Stop=0;
 						EEPROM_Clear_Buf();
 						HAL_Delay(100);
 						LED2_OFF;
@@ -465,7 +470,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				break;
 			
 				default:
-					SPI_RX_FLAG=0;
+					break;
 	    }	
 } 
     
@@ -519,6 +524,8 @@ void A1_Read_A2_DATA(void)
 				
 				case 0x04 : //读取LED灯的亮度值
 				        
+                        END_A2_ReadData_FLAG=0;
+					    A1_ReadData_Stop=0; 
 						temp= LAMP_Read_BrightValue(); //读取亮度值
 						printf("BRV = %d \n",temp);
 				        i2c_tx_buffer[2]=temp;
@@ -527,20 +534,21 @@ void A1_Read_A2_DATA(void)
 				
 				case 0x01:
 					
+                    END_A2_ReadData_FLAG=0;
+					A1_ReadData_Stop=0; 
 					printf("SPI_aRxBuffer[2]=0x01\n");
 					A1_ReadSpeed_A2_Value();
 					I2C_MASTER_TX_DATA();
 					break;
 				case 0xe0 :
 					
-				    A1_ReadEeprom_A2_Value();
+                    END_A2_ReadData_FLAG=0;
+					A1_ReadData_Stop=0; 
+					A1_ReadEeprom_A2_Value();
 				    I2C_MASTER_TX_DATA();
 					break;
 				default:
-					{
-						I2C_TX_DATA=0;
-						
-					}
+					break;
 			    
 		   } 
 }

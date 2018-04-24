@@ -454,7 +454,6 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
           __HAL_TIM_CLEAR_FLAG(&htimx_STEPMOTOR, STEPMOTOR_TIM_FLAG_CCx);
           DRV8825_OUTPUT_DISABLE(); 
 		 END_STOP_FLAG=1;
-		 END_A2_ReadData_FLAG=1;
 		 if(stop_flag==21)
 		  {
 			stop_flag=100;

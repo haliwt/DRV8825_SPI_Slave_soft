@@ -122,7 +122,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.15 . Data:2018.04.23 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.16 . Data:2018.04.24 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   /* 使能接收，进入中断回调函数 */
   HAL_UART_Receive_IT(&husartx,aRxBuffer,7);
@@ -140,16 +140,19 @@ int main(void)
       if(SPI_RX_FLAG==1)
 		{
 		 SPI_RX_FLAG=0;
+		 END_A2_ReadData_FLAG=0;
 		 A1_CONTROL_A2_MOTOR_FUN(); 
 		}
 	  if(I2C_TX_DATA==1)
 		{
 		   I2C_TX_DATA=0;
+		   END_A2_ReadData_FLAG=0;
 		   A1_Read_A2_DATA();
 		}
 	  if(re_intrrupt_flag==1)
 	  	{
             re_intrrupt_flag=0;
+			END_A2_ReadData_FLAG=0;
 			A2_MOTOR_FUN();
 	  	}
 	  if(KEY1_StateRead()==KEY_DOWN)
@@ -164,6 +167,8 @@ int main(void)
 		if((HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)||(A2_RX_STOP==1))
 		{
 			PB8_flag=1;
+			END_A2_ReadData_FLAG=0;
+		    A1_ReadData_Stop=0; 
 			DRV8825_StopMove();
 			A2_RX_STOP=0;
 			//printf("a2_rx_stop=1\n");
@@ -171,65 +176,54 @@ int main(void)
 		}
 		if( END_STOP_FLAG==1)  //马达运行到终点，停止标志位
 		{
+           END_A2_ReadData_FLAG=1;
 		   END_STOP_FLAG=0;
 		   Motor_Save_EndPosition();
         }
+		/*读取A2 脉冲数*/
 		if(A1_ReadData_FLAG==1)
 		{
 		   A1_ReadData_FLAG=0;
 		   if((stop_flag==0) && (A2_ReadPulse==0))
 	        {
-                 A1_ReadEeprom_A2_Value();
+                 A1_ReadData_FLAG=0;
+				 A1_ReadEeprom_A2_Value();
 				 I2C_MASTER_TX_DATA();
+				 HAL_Delay(50);
 				 printf("A1 read A2 DATA fun() stop_flag=0 0x03 \n");
+				
 	        }
-	       else if((END_A2_ReadData_FLAG==1) || (A1_ReadData_Stop==1))
-            {
-                  
-				  printf("A2 Mator stop \n");
-				  A1_ReadData_Stop=0;
+	        else
+			{
+				 TX_Times=0;
+				 A1_ReadRealTime_A2_Value();
+		         I2C_MASTER_TX_DATA();
+				 HAL_Delay(50);
+				 printf("A1 read A2 DATA fun() 0x03 \n");
+				
+				
+			}
+
+		}
+		/*A2马达停止*/
+		if(A1_ReadData_Stop==1)
+        {
+                  A1_ReadData_Stop=0;
+				  TX_Times++;
 				  if(TX_Times < 3)
 				   {
 					   A1_ReadRealTime_A2_Value();
 					   I2C_MASTER_TX_DATA(); 
-					   HAL_Delay(200);
+					   HAL_Delay(100);
 					   printf("TX_Times= %d \n",TX_Times);
                    }
-				  HAL_Delay(200); //wt.edit 2018.04.23
-				  printf("Tx send over TX_Times= %d \n",TX_Times);
-				    LED2_OFF;
-					LED1_OFF;		  
-					HAL_Delay(200);
-					LED2_OFF;
-					LED1_OFF;
-					HAL_Delay(200);
-					LED2_ON;
-					LED1_ON;
-					HAL_Delay(200);
-					LED2_OFF;
-					LED1_OFF;
-					HAL_Delay(200);
-					LED2_ON;
-					LED1_ON;
-					HAL_Delay(200);
-					LED2_OFF;
-					LED1_OFF;
-					HAL_Delay(200);
-					LED2_ON;
-					LED1_ON;
-                    
-            }
-			else
-			{
-				 TX_Times=0;
-				 A1_ReadRealTime_A2_Value();
-		         I2C_MASTER_TX_DATA(); 
-				 HAL_Delay(200);
-				 printf("A1 read A2 DATA fun() 0x03 \n");
-				 HAL_Delay(100);
-				 
-				 
-			}
+				  else if((TX_Times ==10) ||(TX_Times > 11)) //wt.edit 2018.04.24
+				  	TX_Times=4;
+
+				  else
+				  { 
+				     printf("Tx send TX_Times is over \n");
+				  }
 
 		}
 
@@ -242,6 +236,8 @@ int main(void)
 		if(KEY3_StateRead()==KEY_DOWN)
 	    {
             PB8_flag=1;
+			END_A2_ReadData_FLAG=0;
+			A1_ReadData_Stop=0; 
 			DRV8825_StopMove();
 			A2_RX_STOP=0;
 
@@ -499,14 +495,9 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
             	{
 				   I2C_TX_DATA=0;
 				   A1_ReadData_Stop=1;
-				   A1_ReadData_FLAG=1;
-				   TX_Times++;
-				   if(TX_Times >10)
-				   {
-				     TX_Times=4;
-				   }
 				   
-            	}
+				 
+	            }
 			    else
 				{
 				 A1_ReadData_FLAG=1;
@@ -514,14 +505,15 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 				 I2C_TX_DATA=0;
 				}
 		    }
+		else
+			{
+
+		    }
 	 }
   }
   else 
   {
       RX_JUDGE=1;
-     //HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.
-     // printf("SPI_receive data error \n");
-	 // HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
   }
   
 	
