@@ -951,8 +951,8 @@ Section Cross References
     stm32f1xx_ll_usb.o(i.USB_EPStartXfer) refers to stm32f1xx_ll_usb.o(i.USB_WritePMA) for USB_WritePMA
     main.o(i.HAL_SPI_RxCpltCallback) refers to main.o(.bss) for .bss
     main.o(i.HAL_SPI_RxCpltCallback) refers to main.o(.data) for .data
-    main.o(i.HAL_SPI_RxCpltCallback) refers to a2_fun.o(.data) for END_A2_ReadData_FLAG
     main.o(i.HAL_SPI_RxCpltCallback) refers to a2_fun.o(.data) for A2_RX_STOP
+    main.o(i.HAL_SPI_RxCpltCallback) refers to a2_fun.o(.data) for END_A2_ReadData_FLAG
     main.o(i.HAL_UART_RxCpltCallback) refers to bsp_key.o(i.KEY3_StateRead) for KEY3_StateRead
     main.o(i.HAL_UART_RxCpltCallback) refers to stm32f1xx_hal_gpio.o(i.HAL_GPIO_ReadPin) for HAL_GPIO_ReadPin
     main.o(i.HAL_UART_RxCpltCallback) refers to drv8825.o(i.DRV8825_StopMove) for DRV8825_StopMove
@@ -993,10 +993,10 @@ Section Cross References
     main.o(i.main) refers to bsp_stepmotor.o(i.STEPMOTOR_AxisMoveRel) for STEPMOTOR_AxisMoveRel
     main.o(i.main) refers to stm32f1xx_hal_gpio.o(i.HAL_GPIO_ReadPin) for HAL_GPIO_ReadPin
     main.o(i.main) refers to drv8825.o(i.DRV8825_StopMove) for DRV8825_StopMove
+    main.o(i.main) refers to stm32f1xx_hal.o(i.HAL_Delay) for HAL_Delay
     main.o(i.main) refers to drv8825.o(i.Motor_Save_EndPosition) for Motor_Save_EndPosition
     main.o(i.main) refers to drv8825.o(i.A1_ReadRealTime_A2_Value) for A1_ReadRealTime_A2_Value
     main.o(i.main) refers to bsp_i2c.o(i.I2C_MASTER_TX_DATA) for I2C_MASTER_TX_DATA
-    main.o(i.main) refers to stm32f1xx_hal.o(i.HAL_Delay) for HAL_Delay
     main.o(i.main) refers to printfa.o(i.__0printf) for __2printf
     main.o(i.main) refers to drv8825.o(i.A1_ReadEeprom_A2_Value) for A1_ReadEeprom_A2_Value
     main.o(i.main) refers to bsp_key.o(i.KEY3_StateRead) for KEY3_StateRead
@@ -3128,8 +3128,8 @@ Image Symbol Table
     _printf_pre_padding                      0x08005c89   Thumb Code    46  printfa.o(i._printf_pre_padding)
     i.fputc                                  0x08005cb8   Section        0  bsp_usartx.o(i.fputc)
     i.main                                   0x08005cd0   Section        0  main.o(i.main)
-    .constdata                               0x08005fb0   Section       16  stm32f1xx_hal_rcc.o(.constdata)
-    .constdata                               0x08005fc0   Section       16  hextodec.o(.constdata)
+    .constdata                               0x08005fd0   Section       16  stm32f1xx_hal_rcc.o(.constdata)
+    .constdata                               0x08005fe0   Section       16  hextodec.o(.constdata)
     .data                                    0x20000000   Section        4  system_stm32f1xx.o(.data)
     .data                                    0x20000004   Section        4  stm32f1xx_hal.o(.data)
     uwTick                                   0x20000004   Data           4  stm32f1xx_hal.o(.data)
@@ -3360,7 +3360,7 @@ Image Symbol Table
     HAL_SPI_Init                             0x08002b1d   Thumb Code   134  stm32f1xx_hal_spi_ex.o(i.HAL_SPI_Init)
     HAL_SPI_MspInit                          0x08002ba9   Thumb Code   150  bsp_spi.o(i.HAL_SPI_MspInit)
     HAL_SPI_Receive_IT                       0x08002c4d   Thumb Code   180  stm32f1xx_hal_spi.o(i.HAL_SPI_Receive_IT)
-    HAL_SPI_RxCpltCallback                   0x08002d05   Thumb Code    78  main.o(i.HAL_SPI_RxCpltCallback)
+    HAL_SPI_RxCpltCallback                   0x08002d05   Thumb Code    80  main.o(i.HAL_SPI_RxCpltCallback)
     HAL_SPI_TransmitReceive_IT               0x08002d65   Thumb Code   164  stm32f1xx_hal_spi.o(i.HAL_SPI_TransmitReceive_IT)
     HAL_SPI_TxCpltCallback                   0x08002e11   Thumb Code     2  stm32f1xx_hal_spi.o(i.HAL_SPI_TxCpltCallback)
     HAL_SPI_TxRxCpltCallback                 0x08002e13   Thumb Code     2  stm32f1xx_hal_spi.o(i.HAL_SPI_TxRxCpltCallback)
@@ -3443,11 +3443,11 @@ Image Symbol Table
     __scatterload_null                       0x08005413   Thumb Code     2  handlers.o(i.__scatterload_null)
     __scatterload_zeroinit                   0x08005415   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
     fputc                                    0x08005cb9   Thumb Code    20  bsp_usartx.o(i.fputc)
-    main                                     0x08005cd1   Thumb Code   466  main.o(i.main)
-    aAPBAHBPrescTable                        0x08005fb0   Data          16  stm32f1xx_hal_rcc.o(.constdata)
-    dec                                      0x08005fc0   Data          16  hextodec.o(.constdata)
-    Region$$Table$$Base                      0x08005fd0   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08005ff0   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08005cd1   Thumb Code   500  main.o(i.main)
+    aAPBAHBPrescTable                        0x08005fd0   Data          16  stm32f1xx_hal_rcc.o(.constdata)
+    dec                                      0x08005fe0   Data          16  hextodec.o(.constdata)
+    Region$$Table$$Base                      0x08005ff0   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08006010   Number         0  anon$$obj.o(Region$$Table)
     SystemCoreClock                          0x20000000   Data           4  system_stm32f1xx.o(.data)
     uCRCErrorWorkaroundCheck                 0x20000008   Data           1  stm32f1xx_hal_spi_ex.o(.data)
     re_intrrupt_flag                         0x2000000a   Data           1  main.o(.data)
@@ -3497,9 +3497,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00006044, Max: 0x00010000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00006064, Max: 0x00010000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00005ff0, Max: 0x00010000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00006010, Max: 0x00010000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -3724,10 +3724,10 @@ Memory Map of the image
     0x08005c88   0x0000002e   Code   RO         7539    i._printf_pre_padding  mc_w.l(printfa.o)
     0x08005cb6   0x00000002   PAD
     0x08005cb8   0x00000018   Code   RO         6430    i.fputc             bsp_usartx.o
-    0x08005cd0   0x000002e0   Code   RO         6198    i.main              main.o
-    0x08005fb0   0x00000010   Data   RO         1629    .constdata          stm32f1xx_hal_rcc.o
-    0x08005fc0   0x00000010   Data   RO         6905    .constdata          hextodec.o
-    0x08005fd0   0x00000020   Data   RO         7605    Region$$Table       anon$$obj.o
+    0x08005cd0   0x00000300   Code   RO         6198    i.main              main.o
+    0x08005fd0   0x00000010   Data   RO         1629    .constdata          stm32f1xx_hal_rcc.o
+    0x08005fe0   0x00000010   Data   RO         6905    .constdata          hextodec.o
+    0x08005ff0   0x00000020   Data   RO         7605    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00001510, Max: 0x00005000, ABSOLUTE)
@@ -3779,9 +3779,9 @@ Image component sizes
        232         24          0          0         88       2213   bsp_spi.o
       1284        150          0         32        584       9398   bsp_stepmotor.o
        206         28          0          0         64       2502   bsp_usartx.o
-      1912        440          0          8          0      12185   drv8825.o
+      1912        440          0          8          0      12181   drv8825.o
        240         18         16          0          0       3306   hextodec.o
-      1540        312          0         17        356       9109   main.o
+      1572        308          0         17        356       9141   main.o
         36          8        304          0       4096        776   startup_stm32f103xe.o
        120         16          0          4          0       3406   stm32f1xx_hal.o
        232         14          0          0          0      27241   stm32f1xx_hal_cortex.o
@@ -3798,7 +3798,7 @@ Image component sizes
         72         16          0          4          0     299053   system_stm32f1xx.o
 
     ----------------------------------------------------------------------
-     20232       1862        368         80       5308     453308   Object Totals
+     20264       1858        368         80       5308     453336   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         32          0          0          7          0          0   (incl. Padding)
 
@@ -3859,15 +3859,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     24192       1968        368         84       5308     446208   Grand Totals
-     24192       1968        368         84       5308     446208   ELF Image Totals
-     24192       1968        368         84          0          0   ROM Totals
+     24224       1964        368         84       5308     446236   Grand Totals
+     24224       1964        368         84       5308     446236   ELF Image Totals
+     24224       1964        368         84          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                24560 (  23.98kB)
+    Total RO  Size (Code + RO Data)                24592 (  24.02kB)
     Total RW  Size (RW Data + ZI Data)              5392 (   5.27kB)
-    Total ROM Size (Code + RO Data + RW Data)      24644 (  24.07kB)
+    Total ROM Size (Code + RO Data + RW Data)      24676 (  24.10kB)
 
 ==============================================================================
 

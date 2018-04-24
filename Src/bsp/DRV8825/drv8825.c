@@ -598,7 +598,7 @@ void A1_ReadEeprom_A2_Value(void)
 		  }
 		  /*??EEPROM??????????????I2c_Buf_Read?? */ 
        	 EEPROM_ReadBytes(I2c_Buf_Read, 5, 4);  //马达走的位置的数据，存储位置
-		  HAL_Delay(10);
+		 HAL_Delay(100);
 	    
 		 
 		 i2c_tx_buffer[0]=I2c_Buf_Read[1]; //通过马达1，上传给上位机，wt.edit 18.03.22
