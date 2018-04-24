@@ -122,7 +122,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.16 . Data:2018.04.24 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 7.17 . Data:2018.04.25 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   /* 使能接收，进入中断回调函数 */
   HAL_UART_Receive_IT(&husartx,aRxBuffer,7);
@@ -140,18 +140,21 @@ int main(void)
       if(SPI_RX_FLAG==1)
 		{
 		 SPI_RX_FLAG=0;
+		 A1_ReadData_Stop=0;
 		 END_A2_ReadData_FLAG=0;
 		 A1_CONTROL_A2_MOTOR_FUN(); 
 		}
 	  if(I2C_TX_DATA==1)
 		{
 		   I2C_TX_DATA=0;
+		   A1_ReadData_Stop=0;
 		   END_A2_ReadData_FLAG=0;
 		   A1_Read_A2_DATA();
 		}
 	  if(re_intrrupt_flag==1)
 	  	{
             re_intrrupt_flag=0;
+			A1_ReadData_Stop=0;
 			END_A2_ReadData_FLAG=0;
 			A2_MOTOR_FUN();
 	  	}
@@ -167,6 +170,7 @@ int main(void)
 		if((HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)||(A2_RX_STOP==1))
 		{
 			PB8_flag=1;
+			 A1_ReadData_Stop=0;
 			END_A2_ReadData_FLAG=0;
 		    A1_ReadData_Stop=0; 
 			DRV8825_StopMove();
@@ -208,8 +212,7 @@ int main(void)
 		/*A2马达停止*/
 		if(A1_ReadData_Stop==1)
         {
-                  A1_ReadData_Stop=0;
-				  TX_Times++;
+                 TX_Times++;
 				  if(TX_Times < 3)
 				   {
 					   A1_ReadRealTime_A2_Value();
@@ -223,6 +226,7 @@ int main(void)
 				  else
 				  { 
 				     printf("Tx send TX_Times is over \n");
+					 A1_ReadData_Stop=0;
 				  }
 
 		}
@@ -230,12 +234,14 @@ int main(void)
 		if(RX_JUDGE==1) //wt.edit 2018.04.22
 	    {
           RX_JUDGE=0;
+		  A1_ReadData_Stop=0;
 	      printf("SPI_receive data error \n");
 		  
 	    }
 		if(KEY3_StateRead()==KEY_DOWN)
 	    {
             PB8_flag=1;
+			A1_ReadData_Stop=0;
 			END_A2_ReadData_FLAG=0;
 			A1_ReadData_Stop=0; 
 			DRV8825_StopMove();
