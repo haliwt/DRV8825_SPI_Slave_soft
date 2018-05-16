@@ -513,11 +513,13 @@ void  A1_ReadRealTime_A2_Value(void)
 	   real_value=step_count;
       
 	        i2c_tx_buffer[2]=real_value & 0xff;
+	        HAL_Delay(30);
 	        i2c_tx_buffer[1]=real_value>>8 & 0xff;
+	        HAL_Delay(30);
 	        i2c_tx_buffer[0]=real_value>>16 & 0xff; //最高数据位
-           
+             HAL_Delay(30);
         printf("A2 read real position= %ld \n",real_value);
-          
+         HAL_Delay(30); 
 } 
        
         

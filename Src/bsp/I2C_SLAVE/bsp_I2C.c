@@ -95,8 +95,9 @@ void I2C_MASTER_TX_DATA(void)
 	  pdata=i2c_tx_buffer[i];
 	  if(HAL_I2C_Master_Transmit(&I2cHandle,(uint16_t)I2C_ADDRESS,&pdata,3,0xFFFF)==HAL_OK)
 	  {
+		HAL_Delay(100);
 		printf("I2C send data is successd \n");
-		HAL_Delay(5);
+		HAL_Delay(50);
 	  }
 	  else printf("i2c_tx is error \n");
 	}
