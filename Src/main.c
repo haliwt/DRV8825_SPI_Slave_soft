@@ -17,6 +17,7 @@
 #include "spi/bsp_spi.h"
 #include "i2c_slave/bsp_I2C.h"
 #include "a2_fun/a2_fun.h"
+#include "CAN/bsp_CAN.h"
 
 #define SENDBUFF_SIZE             100 // ´®¿ÚDMA·¢ËÍ»º³åÇø´óÐ¡
 #define STEPMOTOR_MICRO_STEP      32  // ²½½øµç»úÇý¶¯Æ÷Ï¸·Ö£¬±ØÐëÓëÇý¶¯Æ÷Êµ¼ÊÉèÖÃ¶ÔÓ¦
@@ -54,6 +55,9 @@ extern __IO uint8_t END_A2_ReadData_FLAG;  //???????
 __IO uint8_t A1_ReadData_Stop=0;  //Âí´ï¶ÁÈ¡ËÙ¶È£¬µÈÓÚÁã¡£
 __IO uint8_t TX_Times=0;      //Âí´ï2¶ÁÈ¡ÊµÊ±·¢ËÍµÄÊý¾Ý´ÎÊý£¬Âí´ïÍ£Ö¹¡£
 __IO uint8_t RX_JUDGE=0;   //½ÓÊÜÅÐ¶Ï
+ uint8_t CAN_RX_Buf[4];
+ extern uint32_t CAN_STD_ID;
+ uint8_t CAN_TX_Buf[4]={0x00,0x00,0x00,0X00};  //CAN ·¢ËÍÊý¾Ý¡
 
 /* À©Õ¹±äÁ¿ ------------------------------------------------------------------*/
 /* Ë½ÓÐº¯ÊýÔ­ÐÎ --------------------------------------------------------------*/
@@ -117,12 +121,13 @@ int main(void)
   GENERAL_TIMx_Init();
 	
   MX_USARTx_Init();
+  CAN1_Mode_Init(CAN_SJW_1TQ,CAN_BS1_5TQ,CAN_BS2_2TQ,36,CAN_MODE_NORMAL ); //Ò»¶¨·ÅÔÚSTEPMOTOR_TIMx_Init();Ç°Ãæ
   STEPMOTOR_TIMx_Init();
   MX_I2C_EEPROM_Init(); 
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 7.18 . Data:2018.04.25 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 9.01 . Data:2018.05.16 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   /* Ê¹ÄÜ½ÓÊÕ£¬½øÈëÖÐ¶Ï»Øµ÷º¯Êý */
   HAL_UART_Receive_IT(&husartx,aRxBuffer,7);
@@ -192,12 +197,22 @@ int main(void)
 	        }
 	        else
 			{
+				 HAL_Delay(10);
+				 LED1_OFF;
+				 LED2_ON;
+				 HAL_Delay(10);
+				 LED1_ON;
+				 LED2_OFF;
+				// HAL_Delay(10);
+				
 				 TX_Times=0;
 				 A1_ReadRealTime_A2_Value();
-		         I2C_MASTER_TX_DATA();
-				 HAL_Delay(50);
-				 printf("A1 read A2 DATA fun() 0x03 \n");
-				
+				 HAL_Delay(10);
+				 I2C_MASTER_TX_DATA();
+				 HAL_Delay(10);
+				 
+				// I2C_MASTER_TX_DATA();//printf("A1 read A2 DATA fun() 0x03 \n");
+				// HAL_Delay(200);
 				
 			}
 
@@ -205,14 +220,16 @@ int main(void)
 		/*A2Âí´ïÍ£Ö¹*/
 		if(A1_ReadData_Stop==1)
         {
-                 TX_Times++;
+                  
 				  if(TX_Times < 3)
 				   {
+					   TX_Times++;
 					   A1_ReadRealTime_A2_Value();
 					   I2C_MASTER_TX_DATA(); 
 					   HAL_Delay(100);
 					   printf("TX_Times= %d \n",TX_Times);
                    }
+				   #if 0
 				  else if((TX_Times ==10) ||(TX_Times > 11)) //wt.edit 2018.04.24
 				  	TX_Times=4;
 
@@ -221,7 +238,7 @@ int main(void)
 				     printf("Tx send TX_Times is over \n");
 					 A1_ReadData_Stop=0;
 				  }
-
+                 #endif
 		}
 
 		if(RX_JUDGE==1) //wt.edit 2018.04.22
@@ -478,6 +495,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	 if(SPI_aRxBuffer[1]==0x00)
 	 {
         SPI_RX_FLAG=1;
+		HAL_Delay(200);
 		if(SPI_aRxBuffer[2]==0x00)
 			{
               A2_RX_STOP=1;
@@ -490,7 +508,8 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 		SPI_RX_FLAG=0;
 		if(SPI_aRxBuffer[2]==0x03)
 			{
-                if(END_A2_ReadData_FLAG==1) //wt.edit 2018.04.22
+                HAL_Delay(40);
+				if(END_A2_ReadData_FLAG==1) //wt.edit 2018.04.22
             	{
 				   I2C_TX_DATA=0;
 				   A1_ReadData_Stop=1;
