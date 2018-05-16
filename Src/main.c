@@ -17,6 +17,7 @@
 #include "spi/bsp_spi.h"
 #include "i2c_slave/bsp_I2C.h"
 #include "a2_fun/a2_fun.h"
+#include "CAN/bsp_CAN.h"
 
 #define SENDBUFF_SIZE             100 // ´®¿ÚDMA·¢ËÍ»º³åÇø´óĞ¡
 #define STEPMOTOR_MICRO_STEP      32  // ²½½øµç»úÇı¶¯Æ÷Ï¸·Ö£¬±ØĞëÓëÇı¶¯Æ÷Êµ¼ÊÉèÖÃ¶ÔÓ¦
@@ -54,7 +55,9 @@ extern __IO uint8_t END_A2_ReadData_FLAG;  //???????
 __IO uint8_t A1_ReadData_Stop=0;  //Âí´ï¶ÁÈ¡ËÙ¶È£¬µÈÓÚÁã¡£
 __IO uint8_t TX_Times=0;      //Âí´ï2¶ÁÈ¡ÊµÊ±·¢ËÍµÄÊı¾İ´ÎÊı£¬Âí´ïÍ£Ö¹¡£
 __IO uint8_t RX_JUDGE=0;   //½ÓÊÜÅĞ¶Ï
-
+ uint8_t CAN_RX_Buf[4];
+ extern uint32_t CAN_STD_ID;
+ uint8_t CAN_TX_Buf[4]={0x00,0x00,0x00,0X00};  //CAN ·¢ËÍÊı¾İ¡
 /* À©Õ¹±äÁ¿ ------------------------------------------------------------------*/
 /* Ë½ÓĞº¯ÊıÔ­ĞÎ --------------------------------------------------------------*/
 /* º¯ÊıÌå --------------------------------------------------------------------*/
@@ -117,6 +120,7 @@ int main(void)
   GENERAL_TIMx_Init();
 	
   MX_USARTx_Init();
+  CAN1_Mode_Init(CAN_SJW_1TQ,CAN_BS1_5TQ,CAN_BS2_2TQ,36,CAN_MODE_NORMAL ); //Ò»¶¨·ÅÔÚSTEPMOTOR_TIMx_Init();Ç°Ãæ
   STEPMOTOR_TIMx_Init();
   MX_I2C_EEPROM_Init(); 
   SPIx_Init(); 
