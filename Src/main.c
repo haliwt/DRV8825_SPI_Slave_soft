@@ -221,7 +221,7 @@ int main(void)
 		if(A1_ReadData_Stop==1)
         {
                   
-				  if(TX_Times < 3)
+				  if(TX_Times < 1)
 				   {
 					   TX_Times++;
 					   A1_ReadRealTime_A2_Value();

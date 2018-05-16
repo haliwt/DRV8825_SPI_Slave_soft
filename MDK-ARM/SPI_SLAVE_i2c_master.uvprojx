@@ -738,6 +738,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\bsp\A2_FUN\a2_fun.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\bsp\CAN\bsp_CAN.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
