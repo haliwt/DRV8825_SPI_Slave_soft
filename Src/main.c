@@ -127,7 +127,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 9.01 . Data:2018.05.16 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 9.03 . Data:2018.05.17 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   /* 使能接收，进入中断回调函数 */
   HAL_UART_Receive_IT(&husartx,aRxBuffer,7);
@@ -142,6 +142,12 @@ int main(void)
   {
 	  
 	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.22
+	   DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
+	  if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
+		{
+		  DRV8825_StopMove();
+		  HAL_Delay(50);
+		}
       if(SPI_RX_FLAG==1)
 		{
 		 SPI_RX_FLAG=0;
@@ -172,11 +178,7 @@ int main(void)
 			  
 		}
 		
-		if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
-		{
-		  DRV8825_StopMove();
-		  HAL_Delay(50);
-		}
+		
 		if( END_STOP_FLAG==1)  //马达运行到终点，停止标志位
 		{
            END_A2_ReadData_FLAG=1;
@@ -197,26 +199,12 @@ int main(void)
 	        }
 	        else
 			{
-				 HAL_Delay(10);
-				 LED1_OFF;
-				 LED2_ON;
-				 HAL_Delay(10);
-				 LED1_ON;
-				 LED2_OFF;
-				// HAL_Delay(10);
-				
 				 TX_Times=0;
 				 A1_ReadRealTime_A2_Value();
-				 HAL_Delay(10);
-				 I2C_MASTER_TX_DATA();
-				 HAL_Delay(10);
-				 
-				// I2C_MASTER_TX_DATA();//printf("A1 read A2 DATA fun() 0x03 \n");
-				// HAL_Delay(200);
-				
+		         I2C_MASTER_TX_DATA();
+				 HAL_Delay(50);
+				 printf("A1 read A2 DATA fun() 0x03 \n");
 			}
-
-		}
 		/*A2马达停止*/
 		if(A1_ReadData_Stop==1)
         {
@@ -286,7 +274,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
    
     __HAL_GPIO_EXTI_CLEAR_IT(KEY3_GPIO_PIN);
-	if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0))
+	if((KEY3_StateRead()==KEY_DOWN)||(A2_RX_STOP==1)||(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0))
 		{
 		  DRV8825_StopMove();
 		}
@@ -295,9 +283,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 if(HAL_UART_Receive_IT(&husartx,aRxBuffer,7)==HAL_OK )
  {
 	  //HAL_Delay(50);
-		if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+		if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 		{
-		  DRV8825_StopMove();
+		 DRV8825_StopMove();
 		}
 
 	  if(aRxBuffer[0]==0xa1)

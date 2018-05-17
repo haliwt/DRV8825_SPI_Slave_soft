@@ -71,24 +71,24 @@ void A2_MOTOR_FUN(void)
 			  	   // DRV8825_SLEEP_DISABLE(); //高电平开始工作,解除休眠状态
 			  	   // HAL_Delay(10);
 					DRV8825_CW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 					{
 						DRV8825_StopMove();
 					}
 					HAL_Delay(2);
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 					{
-						DRV8825_StopMove();
+					DRV8825_StopMove();
 					}
 					LED2_OFF;
 					LED1_ON;
 					HAL_Delay(2);
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 					{
 						DRV8825_StopMove();
 					}
 				
-					if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 					{
 						DRV8825_StopMove();
 					}
@@ -106,14 +106,14 @@ void A2_MOTOR_FUN(void)
 					 // DRV8825_SLEEP_DISABLE(); //高电平开始工作,解除休眠状态	
 					 //  HAL_Delay(10);
 			          DRV8825_CCW_AxisMoveRel(repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
-			          if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+			          if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 						{
 							DRV8825_StopMove();
 						}					
 					HAL_Delay(2);
 					LED2_ON;
 					LED1_OFF;
-					 if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					 if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 						{
 							DRV8825_StopMove();
 						}	
@@ -121,7 +121,7 @@ void A2_MOTOR_FUN(void)
 					//STEPMOTOR_AxisMoveRel(335544*SPR, Toggle_Pulse);---用于测试模式
 				
 					//__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
-					 if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+					 if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 						{
 							DRV8825_StopMove();
 						}
@@ -129,43 +129,36 @@ void A2_MOTOR_FUN(void)
 			          repcdata[1]=0;
 					  repcdata[2]=0;
                        // HAL_UART_Transmit(&husartx,tranbuffer,1,1);
+						//__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 					  }
 				    break;
 			  case 0x33 :
-					  {
+					  
                         DRV8825_SLEEP_DISABLE() ; //高电平马达工作。
 						re_intrrupt_flag=0; 
 						PB8_flag=0;
-                     // DRV8825_SLEEP_DISABLE() ; //高电平开始工作
-                     // HAL_Delay(10);
-					  STEPMOTOR_PC_AxisMoveAbs( repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
+                        STEPMOTOR_PC_AxisMoveAbs( repcdata[0],repcdata[1],repcdata[2],Toggle_Pulse);
                       
-					   if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
-						{
-							DRV8825_StopMove();
-						}	
+					   
 						
-					 // printf("0X33 is OK \n");
-					  repcdata[0]=0;
-			          repcdata[1]=0;
-					  repcdata[2]=0;
+					 //__HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 					
-					  }
-			        
-					  break;
+					  
+		            break;
 					  
 			  case 0xb0 :
 			    {
 			     re_intrrupt_flag=0;
 				 PB8_flag=0;
 				 STEPMOTOR_AxisMoveAbs(0*SPR,Toggle_Pulse);
-				 if(HAL_GPIO_ReadPin(GPIO_PB8,GPIO_PB8_PIN)==0)
+				 if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 						{
 							DRV8825_StopMove();
 						}
 				 
 					//	printf("0Xb0 is OK \n");
 				}
+				 __HAL_UART_CLEAR_IDLEFLAG(&husartx); //edit 18.02.23
 			  break;
 
 			 case 0xa0 :    //重新设置原点
@@ -285,7 +278,7 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 	         switch(SPI_aRxBuffer[2]) 
 			 {
 				
-				  case 0x02:
+				   case 0x02:
 					if(SPI_aRxBuffer[6]==0xb)
 					{
                        DRV8825_SLEEP_DISABLE() ; //高电平马达工作。

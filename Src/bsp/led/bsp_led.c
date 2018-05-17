@@ -23,7 +23,7 @@ void LED_GPIO_Init(void)
 	/* 使能(开启)LED引脚对应IO端口时钟 */  
   LED1_RCC_CLK_ENABLE();
   LED2_RCC_CLK_ENABLE();
- 
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   
   /* 配置LED1引脚输出电压 */
   HAL_GPIO_WritePin(LED1_GPIO, LED1_GPIO_PIN, GPIO_PIN_RESET);
@@ -52,14 +52,14 @@ void LED_GPIO_Init(void)
   HAL_GPIO_Init(LED2_GPIO, &GPIO_InitStruct);
 	
 	
-	/* 设定PB8对应引脚IO编号 */
-  GPIO_InitStruct.Pin = GPIO_PB8_PIN;
+/* 设定PB8对应引脚IO编号 */
+  GPIO_InitStruct.Pin = GPIO_PB9_PIN;
   /* 设定LED2对应引脚IO为输出模式 */
   GPIO_InitStruct.Mode =GPIO_MODE_INPUT; //GPIO_MODE_IT_FALLING;//GPIO_MODE_INPUT;//GPIO_MODE_IT_FALLING;//GPIO_MODE_INPUT  ;//GPIO_MODE_ANALOG;
   /* 设定LED2对应引脚IO操作速度 */
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   /* 初始化LED2对应引脚IO */
-  HAL_GPIO_Init(GPIO_PB8, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIO_PB9, &GPIO_InitStruct);
 	
 }
 

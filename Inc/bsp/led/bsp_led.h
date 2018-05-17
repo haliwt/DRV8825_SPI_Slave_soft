@@ -45,9 +45,9 @@ typedef enum
 
 
 
-#define GPIO_PB8_RCC_CLK_ENABLE()      __HAL_RCC_GPIOB_CLK_ENABLE()  //wt.edit
-#define GPIO_PB8_PIN                   GPIO_PIN_8
-#define GPIO_PB8                       GPIOB  
+#define GPIO_PB9_RCC_CLK_ENABLE()      __HAL_RCC_GPIOB_CLK_ENABLE()  //wt.edit newboard 2018.05.17
+#define GPIO_PB9_PIN                   GPIO_PIN_9
+#define GPIO_PB9                       GPIOB  
 
 
 
