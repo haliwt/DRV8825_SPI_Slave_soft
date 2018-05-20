@@ -102,7 +102,3 @@ void I2C_MASTER_TX_DATA(void)
 	}
 }
 
-
-
-
-

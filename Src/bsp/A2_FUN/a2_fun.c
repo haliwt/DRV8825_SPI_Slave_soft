@@ -406,26 +406,13 @@ void A1_CONTROL_A2_MOTOR_FUN(void)
 				    END_A2_ReadData_FLAG=0;
 					A1_ReadData_Stop=0;      //马达1读取 A2 运行停止位标志位。
 					printf("This is 0xee order \n");
-					HAL_Delay(100); //wt.edit 2018.04.23
-				    LED2_ON;
-					LED1_ON;		  
-					HAL_Delay(200);
-					LED2_OFF;
-					LED1_OFF;
-					HAL_Delay(200);
+					HAL_Delay(10);
 					LED2_ON;
-					LED1_ON;
-					HAL_Delay(200);
-					LED2_OFF;
 					LED1_OFF;
-					HAL_Delay(200);
-					LED2_ON;
-					LED1_ON;
-					HAL_Delay(200);
+					HAL_Delay(10); 
 					LED2_OFF;
-					LED1_OFF;
-					HAL_Delay(200);
-				   }
+					LED1_ON;
+					}
 				  break;
 	
 			case 0xc0 :

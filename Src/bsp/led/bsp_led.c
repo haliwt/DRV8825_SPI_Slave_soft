@@ -53,11 +53,11 @@ void LED_GPIO_Init(void)
 	
 	
 /* 设定PB8对应引脚IO编号 */
-  GPIO_InitStruct.Pin = GPIO_PB9_PIN;
+  GPIO_InitStruct.Pin = GPIO_PB9_PIN ;
   /* 设定LED2对应引脚IO为输出模式 */
   GPIO_InitStruct.Mode =GPIO_MODE_INPUT; //GPIO_MODE_IT_FALLING;//GPIO_MODE_INPUT;//GPIO_MODE_IT_FALLING;//GPIO_MODE_INPUT  ;//GPIO_MODE_ANALOG;
   /* 设定LED2对应引脚IO操作速度 */
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull =GPIO_PULLUP;
   /* 初始化LED2对应引脚IO */
   HAL_GPIO_Init(GPIO_PB9, &GPIO_InitStruct);
 	

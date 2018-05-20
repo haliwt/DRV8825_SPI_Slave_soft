@@ -58,7 +58,8 @@ __IO uint8_t RX_JUDGE=0;   //½ÓÊÜÅÐ¶Ï
  uint8_t CAN_RX_Buf[4];
  extern uint32_t CAN_STD_ID;
  uint8_t CAN_TX_Buf[4]={0x00,0x00,0x00,0X00};  //CAN ·¢ËÍÊý¾Ý¡
-
+ uint8_t spi_rx_buf[1];
+  uint8_t spi_tx_buf[1]={0x23};
 /* À©Õ¹±äÁ¿ ------------------------------------------------------------------*/
 /* Ë½ÓÐº¯ÊýÔ­ÐÎ --------------------------------------------------------------*/
 /* º¯ÊýÌå --------------------------------------------------------------------*/
@@ -110,6 +111,7 @@ int main(void)
 {
   uint8_t txbuf[100];
   uint8_t Mode_Count;
+ 
   // uint8_t DS18B20ID[8],temp;
  // float ftemp;
   /* ¸´Î»ËùÓÐÍâÉè£¬³õÊ¼»¯Flash½Ó¿ÚºÍÏµÍ³µÎ´ð¶¨Ê±Æ÷ */
@@ -127,7 +129,7 @@ int main(void)
   SPIx_Init(); 
   HAL_TIM_Base_Start(&htimx_STEPMOTOR);
  
-  memcpy(txbuf,"This SPI_Slave code of version 9.03 . Data:2018.05.17 \n",100);
+  memcpy(txbuf,"This SPI_Slave code of version 9.04 . Data:2018.05.17 \n",100);
   HAL_UART_Transmit(&husartx,txbuf,strlen((char *)txbuf),1000);
   /* Ê¹ÄÜ½ÓÊÕ£¬½øÈëÖÐ¶Ï»Øµ÷º¯Êý */
   HAL_UART_Receive_IT(&husartx,aRxBuffer,7);
@@ -136,13 +138,15 @@ int main(void)
   Brightness=LAMP_Read_BrightValue(); 
   GENERAL_TIMx_Init();
   HAL_TIM_PWM_Start(&htimx,TIM_CHANNEL_4); 
+  LED_GPIO_Init();
   HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7);
-   
+  
   while (1)
   {
 	  
 	  HAL_SPI_Receive_IT(&hspi_SPI,&SPI_aRxBuffer[0],7); //wt.edit 2018.04.22
-	   DRV8825_SLEEP_DISABLE() ; //¸ßµçÆ½Âí´ï¹¤×÷¡£
+	   DRV8825_SLEEP_DISABLE() ; //¸ßµçÆ½Âí´ï¹¤×÷¡
+	  HAL_SPI_TransmitReceive(&hspi_SPI, spi_tx_buf, spi_rx_buf, 1 ,0xff) ;
 	  if(HAL_GPIO_ReadPin(GPIO_PB9,GPIO_PB9_PIN)==0)
 		{
 		  DRV8825_StopMove();
@@ -205,6 +209,8 @@ int main(void)
 				 HAL_Delay(50);
 				 printf("A1 read A2 DATA fun() 0x03 \n");
 			}
+			
+		}
 		/*A2Âí´ïÍ£Ö¹*/
 		if(A1_ReadData_Stop==1)
         {
@@ -476,10 +482,13 @@ if(HAL_UART_Receive_IT(&husartx,aRxBuffer,7)==HAL_OK )
 #if 1
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
+  HAL_SPI_TransmitReceive(&hspi_SPI, spi_tx_buf, spi_rx_buf, 1 ,0xff) ;
  
+  HAL_Delay(100);
   if(SPI_aRxBuffer[0]==0xa2)
   {
      RX_JUDGE=0;
+	 
 	 if(SPI_aRxBuffer[1]==0x00)
 	 {
         SPI_RX_FLAG=1;
@@ -488,6 +497,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 			{
               A2_RX_STOP=1;
 			  SPI_RX_FLAG=0;
+			   SPIx_ReadWriteByte(&hspi_SPI,0xcd);
 			}
 	 }
 	 else if (SPI_aRxBuffer[1]==0x01)
@@ -501,12 +511,14 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
             	{
 				   I2C_TX_DATA=0;
 				   A1_ReadData_Stop=1;
+				   SPIx_ReadWriteByte(&hspi_SPI,0xcd);
 				   
 				}
 			    else
 				{
 				 A1_ReadData_FLAG=1;
 				 I2C_TX_DATA=0;
+				  SPIx_ReadWriteByte(&hspi_SPI,0xcd);
 				}
 		    }
 		
@@ -517,6 +529,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   else 
   {
       RX_JUDGE=1;
+	   SPIx_ReadWriteByte(&hspi_SPI,0xcd);
   }
   
 	

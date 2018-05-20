@@ -34,6 +34,7 @@ extern SPI_HandleTypeDef hspi_SPI;
 void SPIx_Init(void);
 uint8_t SPI1_ReadWriteByte(uint8_t TxData);
 void SPI1_RX_FUN(void);
-
+uint8_t SPIx_ReadWriteByte(SPI_HandleTypeDef* hspi,uint8_t byte);
+void SYNC_COMM_TEST(void);
 #endif  /* __BSP_SPIx_H__ */
 

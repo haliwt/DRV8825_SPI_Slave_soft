@@ -29,6 +29,7 @@ extern uint8_t repcdata[3];
 extern __IO uint32_t  home_position; 
 extern uint8_t  SPI_RX_FLAG;
 extern __IO uint8_t Brightness;
+uint8_t test_aTxBuffer[5]={0x12,0xa1,0x34,0xb2,0xde};
 /*********************************************************************************
   * 函数功能: 串行FLASH初始化
   * 输入参数: huart：串口句柄类型指针
@@ -132,13 +133,72 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
 } 
 
 
-
-//SPI1 读写一个字节
-//TxData:要写入的字节
-//返回值:读取到的字节
+/***********************************************************************
+  *
+  * 函数功能: 读取写入一个字节数据并接收一个字节数据
+  * 输入参数: TxData：要写入的字节。
+  * 返 回 值: uint8_t：接收到的数据
+  * 说    明：无
+  *
+*************************************************************************/
 uint8_t SPI1_ReadWriteByte(uint8_t TxData)
 {
     uint8_t Rxdata;
     HAL_SPI_TransmitReceive(&hspi_SPI,&TxData,&Rxdata,1, 0xffff);       
  	return Rxdata;          		    //返回收到的数据		
 }
+#if 1
+/***********************************************************************
+  *
+  * 函数功能: 往串行Flash读取写入一个字节数据并接收一个字节数据
+  * 输入参数: byte：待发送数据
+  * 返 回 值: uint8_t：接收到的数据
+  * 说    明：无
+  *
+*************************************************************************/
+
+uint8_t SPIx_ReadWriteByte(SPI_HandleTypeDef* hspi,uint8_t byte)
+{
+  uint8_t d_read,d_send=byte;
+  if(HAL_SPI_TransmitReceive(hspi,&d_send,&d_read,1,0xFF)!=HAL_OK)
+  {   
+    d_read=0xFF;
+  }
+  printf("d_read=%x\n",d_read);
+  return d_read; 
+}
+#endif
+/***********************************************************************
+  *
+  * 函数功能: 测试SPI发送数据
+  * 输入参数: byte：待发送数据
+  * 返 回 值: uint8_t：接收到的数据
+  * 说    明：无
+  *
+*************************************************************************/
+
+void SYNC_COMM_TEST(void)
+{
+    
+	
+	if(HAL_SPI_Transmit(&hspi_SPI,&test_aTxBuffer[0],5,0xffff)==HAL_OK)
+     {
+       
+	  
+	   
+	   printf("主机发送消息成功\n");
+       printf("aTxBuffer[0]=%#x\n",test_aTxBuffer[0]);
+	   printf("aTxBuffer[1]=%#x\n",test_aTxBuffer[1]);
+	   printf("aTxBuffer[2]=%#x\n",test_aTxBuffer[2]);
+	   printf("aTxBuffer[3]=%#x\n",test_aTxBuffer[3]);
+	   printf("aTxBuffer[4]=%#x\n",test_aTxBuffer[4]);
+	  // printf("aTxBuffer[5]=%#x\n",test_aTxBuffer[5]);
+	  // printf("aTxBuffer[6]=%#x\n",test_aTxBuffer[6]);
+	  
+	   
+       HAL_Delay(10);
+	  }
+	  
+
+   }
+

@@ -511,6 +511,7 @@ void STEPMOTOR_TIMx_IRQHandler(void)//定时器中断处理
   * 返 回 值: 无
   * 说    明: 该函数被HAL库内部调用
   */
+#if 1
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 {
 
@@ -525,7 +526,8 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     GENERAL_TIM_RCC_CLK_ENABLE();
   }
 }
-
+#endif
+# if 1
 /**
   * 函数功能: 基本定时器硬件反初始化配置
   * 输入参数: htim_base：基本定时器句柄类型指针
@@ -552,6 +554,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
   }
 
  }
-
+#endif 
 
 
